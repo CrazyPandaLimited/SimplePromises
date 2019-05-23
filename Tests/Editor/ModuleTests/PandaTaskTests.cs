@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using StandardAssets.Editor;
 
@@ -22,6 +23,25 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_taskSuccess = false;
 			_realException = null;
 			_task.Fail(  x => _realException = _realException == null ? x : null ).Done( () => _taskSuccess = true );
+		}
+
+		[ TestCase( 1 ) ]
+		[ TestCase( 3 ) ]
+		public void MultipleDoneTest( int callbackCount )
+		{
+			//arrange
+			bool[ ] done = new bool[ callbackCount ];
+			for( int i = 0; i < done.Length; i++ )
+			{
+				int index = i;
+				_task.Done( () => done[ index ] = true );
+			}
+
+			//act
+			_task.Resolve();
+
+			//assert
+			Assert.True( done.All( x => x ) );
 		}
 
 		[ Test ]
