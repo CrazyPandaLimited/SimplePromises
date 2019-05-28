@@ -101,11 +101,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			taskPair.Item2.Resolve();
 
 			//assert
-			Assert.False( doneCall );
-			Assert.AreEqual( realException, taskPair.Item1.Error );
-
-			Assert.IsInstanceOf< TaskRejectedException >( taskPair.Item1.Error.GetBaseException() );
-			Assert.AreEqual( taskPair.Item1.Status, PandaTaskStatus.Rejected );
+			Assert.True( doneCall );
+			Assert.Null( realException );
+			Assert.Null( taskPair.Item1.Error );
+			Assert.AreEqual( taskPair.Item1.Status, PandaTaskStatus.Resolved );
 		}
 
 		[ Test ]
