@@ -165,5 +165,43 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
 			CollectionAssert.AreEquivalent( task.Error.Flatten().InnerExceptions, tasksCollection.Where( x => x.Status == PandaTaskStatus.Rejected ).Select( x => x.Error.GetBaseException() ) );
 		}
+
+		[TestCase(2)]
+		[TestCase(5)]
+		public void InitFirstResolvedTest( int count )
+		{
+			//arrange
+			var tasksCollection = new List< PandaTask >( count );
+			for( int i = 0; i < count; i++ )
+			{
+				tasksCollection.Add( new PandaTask() );
+			}
+			tasksCollection[0].Resolve();
+			
+			//act
+			var task = new WhenAllPandaTask( tasksCollection );
+			
+			//assert
+			Assert.AreEqual( PandaTaskStatus.Pending, task.Status );
+		}
+		
+		[TestCase(1)]
+		[TestCase(5)]
+		public void InitResolvedTest( int count )
+		{
+			//arrange
+			var tasksCollection = new List< IPandaTask >( count );
+			for( int i = 0; i < count; i++ )
+			{
+				tasksCollection.Add( PandaTasksUtilitys.CompletedTask );
+			}
+
+			//act
+			var task = new WhenAllPandaTask( tasksCollection );
+			
+			//assert
+			Assert.AreEqual( PandaTaskStatus.Resolved, task.Status );
+		}
+		
 	}
 }
