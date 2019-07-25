@@ -174,6 +174,51 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 		}
 
 		[ Test ]
+		public void ThenTest()
+		{
+			//arrange
+			bool thenFisrst = false;
+			IPandaTask newtask = _task.Then( () => thenFisrst = !thenFisrst ).Done( () => thenFisrst = true );
+
+			//act
+			_task.Resolve();
+
+			//assert
+			Assert.IsTrue( thenFisrst );
+			Assert.AreEqual( _task.Status, newtask.Status );
+		}
+
+		[ Test ]
+		public void CatchTest()
+		{
+			//arrange
+			bool catchFirst = false;
+			AggregateException catchError = null;
+			AggregateException doneError = null;
+
+			IPandaTask newtask = _task.Catch( ex =>
+			{
+				catchError = ex;
+				catchFirst = !catchFirst;
+			} ).Fail( ex =>
+			{
+				doneError = ex;
+				catchFirst = true;
+			} );
+
+			//act
+			var testException = new Exception();
+			_task.Reject( testException );
+
+			//assert
+			Assert.True(catchFirst);
+
+			Assert.AreEqual( testException, doneError.GetBaseException() );
+			Assert.AreEqual( testException, catchError.GetBaseException() );
+			Assert.AreEqual( testException, newtask.Error.GetBaseException() );
+		}
+
+		[ Test ]
 		public void CatchWithTaskTest()
 		{
 			//arrange
