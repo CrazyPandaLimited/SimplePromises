@@ -1,8 +1,7 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-
+using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
@@ -65,7 +64,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//act
 			for( int i = 0; i < resolveCount; i++ )
 			{
-				tasksCollection[i].Resolve();
+				tasksCollection[ i ].Resolve();
 			}
 
 			//assert
@@ -106,7 +105,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//act
 			for( int i = 0; i < rejectCount; i++ )
 			{
-				tasksCollection[ i ].Reject( );
+				tasksCollection[ i ].Reject();
 			}
 
 			//assert
@@ -166,8 +165,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			CollectionAssert.AreEquivalent( task.Error.Flatten().InnerExceptions, tasksCollection.Where( x => x.Status == PandaTaskStatus.Rejected ).Select( x => x.Error.GetBaseException() ) );
 		}
 
-		[TestCase(2)]
-		[TestCase(5)]
+		[ TestCase( 2 ) ]
+		[ TestCase( 5 ) ]
 		public void InitFirstResolvedTest( int count )
 		{
 			//arrange
@@ -176,17 +175,18 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			{
 				tasksCollection.Add( new PandaTask() );
 			}
-			tasksCollection[0].Resolve();
-			
+
+			tasksCollection[ 0 ].Resolve();
+
 			//act
 			var task = new WhenAllPandaTask( tasksCollection );
-			
+
 			//assert
 			Assert.AreEqual( PandaTaskStatus.Pending, task.Status );
 		}
-		
-		[TestCase(1)]
-		[TestCase(5)]
+
+		[ TestCase( 1 ) ]
+		[ TestCase( 5 ) ]
 		public void InitResolvedTest( int count )
 		{
 			//arrange
@@ -198,10 +198,19 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//act
 			var task = new WhenAllPandaTask( tasksCollection );
-			
+
 			//assert
 			Assert.AreEqual( PandaTaskStatus.Resolved, task.Status );
 		}
-		
+
+		[ Test ]
+		public void ZeroTasksTest()
+		{
+			//act
+			var task = new WhenAllPandaTask( Enumerable.Empty< IPandaTask >() );
+
+			//assert
+			Assert.AreEqual( PandaTaskStatus.Resolved, task.Status );
+		}
 	}
 }
