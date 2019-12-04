@@ -116,6 +116,22 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.Throws< InvalidOperationException >( testTask.Reject );
 		}
 
+        [ Test ]
+        public void ChainCatchTest()
+        {
+            //arrange
+            var testTask = new PandaTask< int >();
+            var testTask2 = new PandaTask< int >();
+            var resultTask = testTask.Catch( x => testTask2 );
+
+            //act
+            const int testValue = 1;
+            testTask.SetValue( testValue );
+
+            //assert
+            Assert.AreEqual( testValue, resultTask.Result );
+        }
+
 		[ Test ]
 		public void DisposeTest()
 		{

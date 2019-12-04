@@ -66,8 +66,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 		public void ResolveTaskTest()
 		{
 			//arrange
-			var firstTask = new PandaTask<int>();
-			var secondTask = new PandaTask< int >();
+            var firstTask = new PandaTask< int >();
+            var secondTask = new PandaTask< int >();
 
 			const int offset = 3;
 			PandaTask< int > testTask = ConstructTask( firstTask, false, () =>
@@ -106,20 +106,44 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Resolved, testTask.Status );
 		}
 
-		private PandaTask< TResult > ConstructTask< TFirstResult, TResult >( PandaTask< TFirstResult > firstTask = null, bool fromCatch = false, Func< IPandaTask< TResult > > nextTaskCallback = null )
-		{
-			//create default task
-			if( firstTask == null )
-			{
-				firstTask = new PandaTask< TFirstResult >();
-			}
+        [ Test ]
+        public void RejectResultTest()
+        {
+            //arrange
+            var firstTask = new PandaTask< int >();
+            var secondTask = new PandaTask< int >();
 
-			if( nextTaskCallback == null )
-			{
-				nextTaskCallback = () => null;
-			}
+            const int realResult = 3;
+            bool callbackCalled = false;
+            PandaTask< int > testTask = new ContinuationTaskFromPandaTask< int >( firstTask, () =>
+            {
+                callbackCalled = true;
+                return secondTask;
+            }, true );
 
-			return new ContinuationTaskFromPandaTask< TResult >( firstTask, nextTaskCallback, fromCatch );
-		}
+            //act
+            firstTask.SetValue( realResult );
+
+            //assert
+            Assert.False( callbackCalled );
+            Assert.AreEqual( realResult, testTask.Result );
+            Assert.AreEqual( PandaTaskStatus.Resolved, testTask.Status );
+        }
+
+        private PandaTask< TResult > ConstructTask< TFirstResult, TResult >( IPandaTask< TFirstResult > firstTask = null, bool fromCatch = false, Func< IPandaTask< TResult > > nextTaskCallback = null )
+        {
+            //create default task
+            if( firstTask == null )
+            {
+                firstTask = new PandaTask< TFirstResult >();
+            }
+
+            if( nextTaskCallback == null )
+            {
+                nextTaskCallback = () => null;
+            }
+
+            return new ContinuationTaskFromPandaTask< TResult >( firstTask, nextTaskCallback, fromCatch );
+        }
 	}
 }

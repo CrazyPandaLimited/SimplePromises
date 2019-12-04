@@ -270,6 +270,62 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.DoesNotThrow( _task.Dispose );
 		}
 
+        [ Test ]
+        public void ThenResultResolveTest()
+        {
+            //arrange
+            var firstTask = new PandaTask();
+            var nextTask = new PandaTask< int >();
+           
+            IPandaTask< int > resultTask = firstTask.Then( () => nextTask );
+
+            //act
+            firstTask.Resolve();
+            const int testValue = 1;
+            nextTask.SetValue( testValue );
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Resolved, resultTask.Status );
+            Assert.AreEqual( testValue, resultTask.Result );
+        }
+
+        [ Test ]
+        public void ThenResultRejectFirstTest()
+        {
+            //arrange
+            var firstTask = new PandaTask();
+            var nextTask = new PandaTask< int >();
+           
+            IPandaTask< int > resultTask = firstTask.Then( () => nextTask );
+
+            //act
+            var testError = new Exception();
+            firstTask.Reject(testError);
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, resultTask.Status );
+            Assert.AreEqual( testError, resultTask.Error.GetBaseException() );
+        }
+
+        [ Test ]
+        public void ThenResultRejectSecondTest()
+        {
+            //arrange
+            var firstTask = new PandaTask();
+            var nextTask = new PandaTask< int >();
+           
+            IPandaTask< int > resultTask = firstTask.Then( () => nextTask );
+
+            //act
+            firstTask.Resolve();
+            var testError = new Exception();
+            nextTask.Reject( testError );
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, resultTask.Status );
+            Assert.AreEqual( testError, resultTask.Error.GetBaseException() );
+        }
+
 		[ Test ]
 		public void YieldInstructionTest()
 		{
