@@ -29,15 +29,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 return context.CurrentResult;
             }
 
-            var oldSyncContext = SynchronizationContext.Current;
-            var newSyncContext = new TestSynchronizationContext();
-
-            try
+            // we should run all test code in the same thread because it may access some Unity stuff
+            // so we use our custom SynchronizationContext to be able to control all continuations
+            // this context will restore previous one on disposal
+            using( var newSyncContext = new TestSynchronizationContext() )
             {
-                // we should run all test code in the same thread because it may access some Unity stuff
-                // so we set our custom SynchronizationContext to be able to control all continuations
-                SynchronizationContext.SetSynchronizationContext( newSyncContext );
-
                 var ret = _method.Invoke( context.TestObject, _arguments );
 
                 // wrap our async test inside a System.Threading.Task, so all continuations will go through our SynchronizationContext
@@ -53,7 +49,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
                     {
                         // fire all pending tasks
                         newSyncContext.Tick();
-                        Thread.Sleep( 0 );
+
+                        // 16ms is roughly 60fps
+                        Thread.Sleep( 16 );
                     }
 
                     sw.Stop();
@@ -77,16 +75,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
                     context.CurrentResult.SetResult( ResultState.Failure, "AsyncTest method must return IPandaTask or System.Threading.Task" );
                 }
             }
-            catch( Exception )
-            {
-                // we need this catch block to guarantee that finally block will always be called
-                throw;
-            }
-            finally
-            {
-                // restore default SynchronizationContext
-                SynchronizationContext.SetSynchronizationContext( oldSyncContext );
-            }
 
             return context.CurrentResult;
         }
@@ -96,17 +84,13 @@ namespace CrazyPanda.UnityCore.PandaTasks
             switch( ret )
             {
                 case IPandaTask pandaTask:
-                    return Wrap( pandaTask );
+                    Func<Task> wrap = async () => await pandaTask;
+                    return wrap();
                 case Task task:
                     return task;
                 default:
                     return null;
             }
-        }
-
-        private async Task Wrap( IPandaTask task )
-        {
-            await task;
         }
     }
 }

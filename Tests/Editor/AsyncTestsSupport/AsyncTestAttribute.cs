@@ -29,23 +29,26 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// Creates test with timeout of 10 seconds.
         /// </summary>
         public AsyncTestAttribute()
-            : this( TimeSpan.FromSeconds( 10 ) )
+            : this( 10 )
         {
         }
 
         /// <summary>
         /// Creates test with specified timeout.
         /// </summary>
-        /// <param name="timeout">Test will fail after given time</param>
-        public AsyncTestAttribute( TimeSpan timeout )
+        /// <param name="timeoutSeconds">Test will fail after given time</param>
+        public AsyncTestAttribute( double timeoutSeconds = 10 )
         {
-            Timeout = timeout;
+            Timeout = TimeSpan.FromSeconds( timeoutSeconds );
         }
 
         TestMethod ISimpleTestBuilder.BuildFrom( IMethodInfo method, Test suite )
         {
+            // Set HasExpectedResult=true so call to BuildTestMethod will succeed            
             var parms = new TestCaseParameters() { HasExpectedResult = true };
             var ret = new NUnitTestCaseBuilder().BuildTestMethod( method, suite, parms );
+
+            // Set HasExpectedResult=false so it won't fail later because expected result is not same as actual
             ret.parms.HasExpectedResult = false;
 
             if( !typeof( IPandaTask ).IsAssignableFrom( method.ReturnType.Type ) && !typeof( Task ).IsAssignableFrom( method.ReturnType.Type ) )
