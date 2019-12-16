@@ -23,6 +23,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         public TestSynchronizationContext()
         {
             _oldContext = Current;
+            SetSynchronizationContext(this);
         }
 
         public void Tick()
