@@ -44,14 +44,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
                     var sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
 
+                    SpinWait spin = default;
+
                     // wait till task completes our time runs out
                     while( !waitTask.IsCompleted && sw.Elapsed < _timeout )
                     {
                         // fire all pending tasks
                         newSyncContext.Tick();
-
-                        // 16ms is roughly 60fps
-                        Thread.Sleep( 16 );
+                        spin.SpinOnce();
                     }
 
                     sw.Stop();
