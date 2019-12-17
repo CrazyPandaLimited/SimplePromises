@@ -2,6 +2,7 @@
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Commands;
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,8 +59,8 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
                     if( waitTask.IsFaulted )
                     {
-                        // just throw exception, it will be printed to result by our caller
-                        throw waitTask.Exception;
+                        // throw it the way Unity's "Open error line" will direct to correct line and not here
+                        ExceptionDispatchInfo.Capture( waitTask.Exception.InnerException ).Throw();
                     }
                     else if( waitTask.IsCompleted )
                     {

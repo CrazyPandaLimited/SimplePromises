@@ -11,7 +11,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ReturnsFromAwait()
         {
             // arrange
-            Func< IPandaTask > func = async () => await PandaTasksUtilitys.CompletedTask;
+            async IPandaTask func() => await PandaTasksUtilitys.CompletedTask;
 
             // act
             await func();
@@ -21,7 +21,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ReturnsValueFromAwait()
         {
             // arrange
-            Func< IPandaTask< int > > func = async () => await PandaTasksUtilitys.GetCompletedTask( 1 );
+            async IPandaTask< int > func() => await PandaTasksUtilitys.GetCompletedTask( 1 );
 
             // act
             var value = await func();
@@ -34,7 +34,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ThrowsOnAwaitRejected()
         {
             // arrange
-            Func< IPandaTask > func = async () => await PandaTasksUtilitys.RejectedTask;
+            async IPandaTask func() => await PandaTasksUtilitys.RejectedTask;
             bool hasException = false;
 
             // act
@@ -49,7 +49,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ThrowsOnAwaitRejectedResult()
         {
             // arrange
-            Func< IPandaTask< int > > func = async () => await PandaTasksUtilitys.GetRejectedTask<int>();
+            async IPandaTask< int > func() => await PandaTasksUtilitys.GetRejectedTask<int>();
             bool hasException = false;
 
             // act
@@ -126,6 +126,36 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             // assert
             Assert.That( hasException, Is.True );
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+        }
+
+        [ AsyncTest ]
+        public async IPandaTask CatchCorrectException()
+        {
+            // arrange
+            async IPandaTask func() => await PandaTasksUtilitys.GetTaskWithError( new InvalidOperationException() );
+            Exception exception = null;
+
+            // act
+            try { await func(); }
+            catch( Exception e ) { exception = e; }
+
+            // assert
+            Assert.That( exception, Is.InstanceOf< InvalidOperationException >() );
+        }
+
+        [ AsyncTest ]
+        public async IPandaTask CatchCorrectExceptionWithResult()
+        {
+            // arrange
+            async IPandaTask< int > func() => await PandaTasksUtilitys.GetTaskWithError< int >( new InvalidOperationException() );
+            Exception exception = null;
+
+            // act
+            try { await func(); }
+            catch( Exception e ) { exception = e; }
+
+            // assert
+            Assert.That( exception, Is.InstanceOf< InvalidOperationException >() );
         }
 
         private async IPandaTask CancellableBeforeAwait(CancellationToken token)
