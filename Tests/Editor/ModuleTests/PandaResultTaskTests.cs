@@ -79,17 +79,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			testTask.Reject( testException );
 
 			//assert
-			Assert.AreEqual( testException, testTask.Error.GetBaseException() );
+			Assert.AreEqual( testException, testTask.Error );
 
 			Exception realException = null;
 			try
 			{
 				var _ = testTask.Result;
 			}
-			catch( AggregateException exception )
-			{
-				realException = exception.GetBaseException();
-			}
+			catch( Exception exception )
+            {
+                realException = exception;
+            }
 
 			Assert.AreEqual( testException, realException );
 		}
@@ -143,7 +143,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//assert
 			Assert.AreEqual( PandaTaskStatus.Rejected, testTask.Status );
-			Assert.IsInstanceOf<ObjectDisposedException>( testTask.Error.GetBaseException() );
+			Assert.IsInstanceOf<ObjectDisposedException>( testTask.Error );
 		}
 	}
 }

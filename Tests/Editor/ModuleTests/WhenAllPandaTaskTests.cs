@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
 
@@ -113,57 +114,87 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Pending, task.Status );
 		}
 
-		[ TestCase( 1 ) ]
-		[ TestCase( 3 ) ]
-		public void RejectAllTest( int count )
-		{
-			//arrange
-			var tasksCollection = new List< PandaTask >( count );
-			for( int i = 0; i < count; i++ )
-			{
-				tasksCollection.Add( new PandaTask() );
-			}
+        [ TestCase( 3 ) ]
+        public void RejectAllTest( int count )
+        {
+            //arrange
+            var tasksCollection = new List< PandaTask >( count );
+            for( int i = 0; i < count; i++ )
+            {
+                tasksCollection.Add( new PandaTask() );
+            }
 
-			var task = new WhenAllPandaTask( tasksCollection );
+            var task = new WhenAllPandaTask( tasksCollection );
 
-			//act
-			tasksCollection.ForEach( x => x.Reject( new Exception() ) );
+            //act
+            tasksCollection.ForEach( x => x.Reject( new Exception() ) );
 
-			//assert
-			Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
-			CollectionAssert.AreEquivalent( task.Error.Flatten().InnerExceptions, tasksCollection.Select( x => x.Error.GetBaseException() ) );
-		}
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
+            Assert.IsInstanceOf< AggregateException >( task.Error );
 
-		[ TestCase( 4, 3 ) ]
-		[ TestCase( 4, 1 ) ]
-		public void HalfRejectTest( int count, int rejectCount )
-		{
-			//arrange
-			var tasksCollection = new List< PandaTask >( count );
-			for( int i = 0; i < count; i++ )
-			{
-				tasksCollection.Add( new PandaTask() );
-			}
+            ReadOnlyCollection< Exception > realExceptions = ( ( AggregateException ) task.Error ).Flatten().InnerExceptions;
+            CollectionAssert.AreEquivalent( tasksCollection.Select( x => x.Error ), realExceptions );
+        }
 
-			var task = new WhenAllPandaTask( tasksCollection );
+        [TestCase(1)]
+        [TestCase(2)]
+        public void RejectOneOfAllTest(int count)
+        {
+            //arrange
+            var tasksCollection = new List< PandaTask >( count );
+            for( int i = 0; i < count; i++ )
+            {
+                tasksCollection.Add( new PandaTask() );
+            }
 
-			//act
-			for( int i = 0; i < count; i++ )
-			{
-				if( i < rejectCount )
-				{
-					tasksCollection[ i ].Reject( new Exception() );
-				}
-				else
-				{
-					tasksCollection[ i ].Resolve();
-				}
-			}
+            var task = new WhenAllPandaTask( tasksCollection );
 
-			//assert
-			Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
-			CollectionAssert.AreEquivalent( task.Error.Flatten().InnerExceptions, tasksCollection.Where( x => x.Status == PandaTaskStatus.Rejected ).Select( x => x.Error.GetBaseException() ) );
-		}
+            //act
+            var realError = new Exception();
+            tasksCollection[ 0 ].Reject( realError );
+            for( int i = 1; i < count; i++ )
+            {
+                tasksCollection[i].Resolve();
+            }
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
+            Assert.AreEqual( realError, task.Error );
+        }
+
+        [ TestCase( 4, 2 ) ]
+        public void HalfRejectTest( int count, int rejectCount )
+        {
+            //arrange
+            var tasksCollection = new List< PandaTask >( count );
+            for( int i = 0; i < count; i++ )
+            {
+                tasksCollection.Add( new PandaTask() );
+            }
+
+            var task = new WhenAllPandaTask( tasksCollection );
+
+            //act
+
+            for( int i = 0; i < count; i++ )
+            {
+                if( i < rejectCount )
+                {
+                    tasksCollection[ i ].Reject( new Exception() );
+                }
+                else
+                {
+                    tasksCollection[ i ].Resolve();
+                }
+            }
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
+
+            ReadOnlyCollection< Exception > realExceptions = ( ( AggregateException ) task.Error ).Flatten().InnerExceptions;
+            CollectionAssert.AreEquivalent( tasksCollection.Where( x => x.Status == PandaTaskStatus.Rejected ).Select( x => x.Error ), realExceptions );
+        }
 
 		[ TestCase( 2 ) ]
 		[ TestCase( 5 ) ]

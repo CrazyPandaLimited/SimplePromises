@@ -1,5 +1,4 @@
 ﻿using System;
-
 using NUnit.Framework;
 
 
@@ -22,7 +21,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//assert		
 			Assert.AreEqual( testTask.Status, PandaTaskStatus.Rejected );
-			Assert.IsInstanceOf< ObjectDisposedException >( testTask.Error.GetBaseException() );
+			Assert.IsInstanceOf< ObjectDisposedException >( testTask.Error );
 		}
 
 		[ Test ]
@@ -124,7 +123,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.False( doneCall );
 			Assert.AreEqual( realException, taskPair.Item1.Error );
 
-			Assert.IsInstanceOf< NullReferenceException >( taskPair.Item1.Error.GetBaseException() );
+			Assert.IsInstanceOf< NullReferenceException >( taskPair.Item1.Error );
 		}
 
 		[ Test ]
@@ -145,7 +144,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.False( doneCall );
 			Assert.AreEqual( realException, taskPair.Item1.Error );
 
-			Assert.AreEqual( testException, taskPair.Item1.Error.GetBaseException() );
+			Assert.AreEqual( testException, taskPair.Item1.Error );
 		}
 
 		[ Test ]
@@ -157,7 +156,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			
 			bool doneCall = false;
 			Exception gettedException = null;
-			taskPair.Item1.Done( () => doneCall = true ).Fail( ex => gettedException = ex.GetBaseException() );
+			taskPair.Item1.Done( () => doneCall = true ).Fail( ex => gettedException = ex );
 
 			//act
 			Exception realException = new Exception();
@@ -168,7 +167,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( realException, gettedException );
 
 			Assert.AreEqual( PandaTaskStatus.Rejected,  taskPair.Item1.Status);
-			Assert.AreEqual( realException, taskPair.Item1.Error.GetBaseException() );
+			Assert.AreEqual( realException, taskPair.Item1.Error );
 		}
 
 		[ Test ]

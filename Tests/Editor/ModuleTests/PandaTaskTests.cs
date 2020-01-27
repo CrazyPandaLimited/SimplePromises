@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using StandardAssets.Editor;
 
 
@@ -96,11 +97,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_task.Reject( testError );
 
 			//assert
-			Assert.AreEqual( testError, _task.Error.GetBaseException() );
+			Assert.AreEqual( testError, _task.Error );
 			Assert.AreEqual( PandaTaskStatus.Rejected, _task.Status );
 
 			Assert.False( _taskSuccess );
-			Assert.AreEqual( testError, _realException.GetBaseException() );
+			Assert.AreEqual( testError, _realException );
 		}
 
 		[ Test ]
@@ -113,8 +114,48 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Rejected, _task.Status );
 
 			Assert.AreEqual( _task.Error, _realException );
-			Assert.IsInstanceOf< TaskRejectedException >( _task.Error.GetBaseException() );
+			Assert.IsInstanceOf< TaskRejectedException >( _task.Error );
 		}
+
+        [ Test ]
+        public void ThrowIfErrorFailTest()
+        {
+            //arrange
+            var testError = new Exception();
+            _task.Reject( testError );
+
+            //act
+            Exception realError = null;
+            try
+            {
+                _task.ThrowIfError();
+            }
+            catch( Exception e )
+            {
+                realError = e;
+            }
+
+            //assert
+            Assert.AreEqual( testError, realError );
+        }
+
+        [ Test ]
+        public void ThrowIfErrorFailPendingTest()
+        {
+            //act-assert
+            Assert.DoesNotThrow( _task.ThrowIfError );
+        }
+
+        
+        [ Test ]
+        public void ThrowIfErrorFailResolveTest()
+        {
+            //arrange
+            _task.Resolve();
+
+            //act-assert
+            Assert.DoesNotThrow( _task.ThrowIfError );
+        }
 
 		[ Test ]
 		public void DoubleRejectTest()
@@ -145,14 +186,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_realException = null;
 
 			//act
-			AggregateException secondException = null;
+			Exception secondException = null;
 			_task.Fail( x => secondException = x );
 
 			//assert
 			Assert.False( _taskSuccess );
 
 			Assert.Null( _realException );
-			Assert.AreEqual( realException, secondException.GetBaseException() );
+			Assert.AreEqual( realException, secondException );
 		}
 
 		[ Test ]
@@ -168,7 +209,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//assert
 			Assert.NotNull( castedTask );
-			Assert.False( castedTask.fromCatch );
+			Assert.False( castedTask.FromCatch );
 
 			Assert.AreEqual( expectedCallback, realCallback );
 		}
@@ -193,8 +234,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 		{
 			//arrange
 			bool catchFirst = false;
-			AggregateException catchError = null;
-			AggregateException doneError = null;
+			Exception catchError = null;
+			Exception doneError = null;
 
 			IPandaTask newtask = _task.Catch( ex =>
 			{
@@ -213,19 +254,19 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//assert
 			Assert.True(catchFirst);
 
-			Assert.AreEqual( testException, doneError.GetBaseException() );
-			Assert.AreEqual( testException, catchError.GetBaseException() );
-			Assert.AreEqual( testException, newtask.Error.GetBaseException() );
+			Assert.AreEqual( testException, doneError );
+			Assert.AreEqual( testException, catchError );
+			Assert.AreEqual( testException, newtask.Error );
 		}
 
 		[ Test ]
 		public void CatchWithTaskTest()
 		{
 			//arrange
-			AggregateException realEception = null;
+			Exception realEception = null;
 			IPandaTask nextTask = new PandaTask();
 
-			IPandaTask NextTaskCallback( AggregateException ex )
+			IPandaTask NextTaskCallback( Exception ex )
 			{
 				realEception = ex;
 				return nextTask;
@@ -243,10 +284,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//assert
 			Assert.NotNull( castedTask );
-			Assert.True( castedTask.fromCatch );
+			Assert.True( castedTask.FromCatch );
 
 			Assert.AreEqual( realTask, nextTask );
-			Assert.AreEqual( excpectException, realEception.GetBaseException() );
+			Assert.AreEqual( excpectException, realEception );
 		}
 
 		[ Test ]
@@ -257,7 +298,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
 			//assert
 			Assert.AreEqual( PandaTaskStatus.Rejected, _task.Status );
-			Assert.IsInstanceOf< ObjectDisposedException >( _task.Error.GetBaseException() );
+			Assert.IsInstanceOf< ObjectDisposedException >( _task.Error );
 		}
 
 		[ Test ]
@@ -304,7 +345,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             //assert
             Assert.AreEqual( PandaTaskStatus.Rejected, resultTask.Status );
-            Assert.AreEqual( testError, resultTask.Error.GetBaseException() );
+            Assert.AreEqual( testError, resultTask.Error );
         }
 
         [ Test ]
@@ -323,7 +364,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             //assert
             Assert.AreEqual( PandaTaskStatus.Rejected, resultTask.Status );
-            Assert.AreEqual( testError, resultTask.Error.GetBaseException() );
+            Assert.AreEqual( testError, resultTask.Error );
         }
 
 		[ Test ]

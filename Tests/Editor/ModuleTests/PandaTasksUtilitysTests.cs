@@ -79,7 +79,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			}
 
 			//assert
-			Assert.AreEqual( exception, task.Error.GetBaseException() );
+			Assert.AreEqual( exception, task.Error );
 		}
 
         [ Test ]
@@ -135,7 +135,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-            Assert.That( task.Error.InnerException, Is.InstanceOf< TaskRejectedException >() );
+            Assert.That( task.Error, Is.InstanceOf< TaskRejectedException >() );
         }
 
         [ AsyncTest ]
@@ -149,7 +149,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-            Assert.That( task.Error.InnerException, Is.InstanceOf< InvalidOperationException >() );
+            Assert.That( task.Error, Is.InstanceOf< InvalidOperationException >() );
         }
     }
 }

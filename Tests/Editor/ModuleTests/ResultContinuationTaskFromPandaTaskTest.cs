@@ -45,11 +45,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//assert
 			Assert.AreEqual(PandaTaskStatus.Rejected, testTask.Status );
 
-			Assert.Throws< AggregateException >( () =>
+			Assert.Throws< ObjectDisposedException >( () =>
 			{
 				var _ = testTask.Result;
 			}  );
-			Assert.IsInstanceOf< ObjectDisposedException >( testTask.Error.GetBaseException() );
+			Assert.IsInstanceOf< ObjectDisposedException >( testTask.Error );
 		}
 
 		[ Test ]
