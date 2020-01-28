@@ -137,32 +137,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             CollectionAssert.AreEquivalent( tasksCollection.Select( x => x.Error ), realExceptions );
         }
 
-        [TestCase(1)]
-        [TestCase(2)]
-        public void RejectOneOfAllTest(int count)
-        {
-            //arrange
-            var tasksCollection = new List< PandaTask >( count );
-            for( int i = 0; i < count; i++ )
-            {
-                tasksCollection.Add( new PandaTask() );
-            }
-
-            var task = new WhenAllPandaTask( tasksCollection );
-
-            //act
-            var realError = new Exception();
-            tasksCollection[ 0 ].Reject( realError );
-            for( int i = 1; i < count; i++ )
-            {
-                tasksCollection[i].Resolve();
-            }
-
-            //assert
-            Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
-            Assert.AreEqual( realError, task.Error );
-        }
-
+        [ TestCase( 2, 1 ) ]
         [ TestCase( 4, 2 ) ]
         public void HalfRejectTest( int count, int rejectCount )
         {

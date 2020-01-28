@@ -12,7 +12,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 		public void NullSequenceTest()
 		{
 			//act-assert
-			Assert.Throws< NullReferenceException >( () => PandaTasksUtilitys.Sequence( new PandaTask(), new PandaTask(), null ) );
+			Assert.Throws< ArgumentException >( () => PandaTasksUtilitys.Sequence( new PandaTask(), new PandaTask(), null ) );
 		}
 
 		[ TestCase( 4 ) ]
