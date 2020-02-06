@@ -68,7 +68,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
         TestCommand ICommandWrapper.Wrap( TestCommand command )
         {
+#if UNITY_2019_3_OR_NEWER
+            return command; // no longer need to wrap anything in 2019.3.x
+#else
             return new UnityTestAttribute().Wrap( command );
+#endif
         }
 
         void IApplyToTest.ApplyToTest( Test test )
