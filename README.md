@@ -158,8 +158,9 @@ cancellationSource.Cancel();
 await task; // тут будет выброшено исключение OperationCanceledException
 ```
 Если хотите выполнить работу в другом потоке — используйте Task.Run:
+```c#
 await Task.Run( () => JObject.Parse( HeavyJson) );
-
+```
 При этом важно понимать, что:
 
 * Это НЕ БУДЕТ работать на WebGL. Вы не получите никаких ошибок, просто функция не будет выполнена.
