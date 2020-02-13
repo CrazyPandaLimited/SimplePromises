@@ -13,7 +13,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         //for safe memory without errors
         private object _errors;
 		private int _waitingCount;
-		private readonly bool _isInitialisationComplete;
 		#endregion
 
 		#region Constructors
@@ -24,6 +23,8 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			{
 				throw new ArgumentNullException( nameof(tasksCollection) );
 			}
+
+            _waitingCount = 1;
 
             //add handlers
             foreach( IPandaTask task in tasksCollection )
@@ -50,8 +51,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 }
             }
 
-            _isInitialisationComplete = true;
-            CheckCompletion();
+            CompleteTask();
         }
 		#endregion
 
@@ -96,7 +96,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
         private void CheckCompletion()
         {
-            if( Status == PandaTaskStatus.Pending && _waitingCount == 0 && _isInitialisationComplete )
+            if( Status == PandaTaskStatus.Pending && _waitingCount == 0 )
             {
                 switch( _errors )
                 {
