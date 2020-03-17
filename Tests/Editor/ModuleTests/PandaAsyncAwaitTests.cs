@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System;
-using System.Threading;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
@@ -30,157 +29,139 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         }
 
         [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitRejected()
+        public async IPandaTask ThrowsOnAwait()
         {
             // arrange
-            async IPandaTask func() => await PandaTasksUtilitys.RejectedTask;
-            bool hasException = false;
+            var excpectException = new Exception();
+            async IPandaTask func() => await PandaTasksUtilitys.GetTaskWithError( excpectException );
 
-            // act
-            try { await func(); }
-            catch { hasException = true; }
+            //act
+            Exception realException = null;
+            try
+            {
+                await func();
+            }
+            catch( Exception ex )
+            {
+                realException = ex;
+            }
 
-            // assert
-            Assert.That( hasException, Is.True );
+            //assert
+            Assert.That( realException, Is.EqualTo( excpectException ) );
         }
 
         [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitRejectedResult()
+        public async IPandaTask ThrowsOnAwaitResult()
         {
             // arrange
-            async IPandaTask< int > func() => await PandaTasksUtilitys.GetRejectedTask<int>();
-            bool hasException = false;
+            var excpectException = new Exception();
+            async IPandaTask< int > func() => await PandaTasksUtilitys.GetTaskWithError< int >( excpectException );
 
-            // act
-            try { await func(); }
-            catch { hasException = true; }
+            //act
+            Exception realException = null;
+            try
+            {
+                await func();
+            }
+            catch( Exception ex )
+            {
+                realException = ex;
+            }
 
-            // assert
-            Assert.That( hasException, Is.True );
+            //assert
+            Assert.That( realException, Is.EqualTo( excpectException ) );
         }
 
-        [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitCancelledBeforeAwait()
+        [ Test ]
+        public void ThrowsOnAwaitBeforeAwait()
         {
             // arrange
-            bool hasException = false;
-            var token = new CancellationToken( true );
+            var excpectException = new Exception();
+            async IPandaTask func()
+            {
+                throw excpectException;
+                await NonSynchronousTask();
+            }
 
-            // act
-            var task = CancellableBeforeAwait( token );
-            try { await task; }
-            catch { hasException = true; }
+            //act
+            IPandaTask task = func();
 
             // assert
-            Assert.That( hasException, Is.True );
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+            Assert.That( task.Error, Is.EqualTo( excpectException ) );
         }
-        
-        [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitCancelledAfterAwait()
+
+        [ Test ]
+        public void ThrowsOnAwaitBeforeAwaitResult()
         {
             // arrange
-            bool hasException = false;
-            var token = new CancellationToken( true );
+            var excpectException = new Exception();
+            async IPandaTask< int > func()
+            {
+                throw excpectException;
+                await NonSynchronousTask();
+                return 1;
+            }
 
-            // act
-            var task = CancellableAfterAwait( token );
-            try { await task; }
-            catch { hasException = true; }
+            //act
+            IPandaTask< int > task = func();
 
             // assert
-            Assert.That( hasException, Is.True );
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-        }
-        
-        [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitCancelledValueBeforeAwait()
-        {
-            // arrange
-            bool hasException = false;
-            var token = new CancellationToken( true );
-
-            // act
-            var task = CancellableWithValueBeforeAwait( token );
-            try { await task; }
-            catch { hasException = true; }
-
-            // assert
-            Assert.That( hasException, Is.True );
-            Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+            Assert.That( task.Error, Is.EqualTo( excpectException ) );
         }
 
         [ AsyncTest ]
-        public async IPandaTask ThrowsOnAwaitCancelledValueAfterAwait()
+        public async IPandaTask TrowsOnAwaitAfterAwait()
         {
             // arrange
-            bool hasException = false;
-            var token = new CancellationToken( true );
+            var excpectException = new Exception();
+            async IPandaTask< int > func()
+            {
+                await NonSynchronousTask();
+                throw excpectException;
+            }
 
-            // act
-            var task = CancellableWithValueAfterAwait( token ); 
-            try { await task; }
-            catch { hasException = true; }
+            //act
+            Exception realException = null;
+            try
+            {
+                await func();
+            }
+            catch( Exception ex )
+            {
+                realException = ex;
+            }
 
-            // assert
-            Assert.That( hasException, Is.True );
-            Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+            //assert
+            Assert.That( realException, Is.EqualTo( excpectException ) );
         }
 
         [ AsyncTest ]
-        public async IPandaTask CatchCorrectException()
+        public async IPandaTask TrowsOnAwaitAfterAwaitResult()
         {
             // arrange
-            async IPandaTask func() => await PandaTasksUtilitys.GetTaskWithError( new InvalidOperationException() );
-            Exception exception = null;
+            var excpectException = new Exception();
+            async IPandaTask< int > func()
+            {
+                await NonSynchronousTask();
+                throw excpectException;
+                return 1;
+            }
 
-            // act
-            try { await func(); }
-            catch( Exception e ) { exception = e; }
+            //act
+            Exception realException = null;
+            try
+            {
+                await func();
+            }
+            catch( Exception ex )
+            {
+                realException = ex;
+            }
 
-            // assert
-            Assert.That( exception, Is.InstanceOf< InvalidOperationException >() );
-        }
-
-        [ AsyncTest ]
-        public async IPandaTask CatchCorrectExceptionWithResult()
-        {
-            // arrange
-            async IPandaTask< int > func() => await PandaTasksUtilitys.GetTaskWithError< int >( new InvalidOperationException() );
-            Exception exception = null;
-
-            // act
-            try { await func(); }
-            catch( Exception e ) { exception = e; }
-
-            // assert
-            Assert.That( exception, Is.InstanceOf< InvalidOperationException >() );
-        }
-
-        private async IPandaTask CancellableBeforeAwait(CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            await NonSynchronousTask();
-        }
-
-        private async IPandaTask CancellableAfterAwait(CancellationToken token)
-        {
-            await NonSynchronousTask();
-            token.ThrowIfCancellationRequested();
-        }
-
-        private async IPandaTask< int > CancellableWithValueBeforeAwait(CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            await NonSynchronousTask();
-            return 1;
-        }
-
-        private async IPandaTask< int > CancellableWithValueAfterAwait(CancellationToken token)
-        {
-            await NonSynchronousTask();
-            token.ThrowIfCancellationRequested();
-            return 1;
+            //assert
+            Assert.That( realException, Is.EqualTo( excpectException ) );
         }
 
         private IPandaTask NonSynchronousTask()

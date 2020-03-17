@@ -3,39 +3,38 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     [ DebuggerNonUserCode ]
 	public static class PandaTasksUtilitys
 	{
+        #region Constructor
+        static PandaTasksUtilitys()
+        {
+            //create resolved and canceled tasks. Both tasks will be created before first class access.
+            var completedTask = new PandaTask();
+            completedTask.Resolve();
+            CompletedTask = completedTask;
+
+            var canceledTask = new PandaTask();
+            canceledTask.Reject( new TaskCanceledException() );
+            CanceledTask = canceledTask;
+        }
+        #endregion
+
 		#region Public Members
-		/// <summary>
-		/// Returns completed task
-		/// </summary>
-		public static IPandaTask CompletedTask
-		{
-			get
-			{
-				var newTask = new PandaTask();
-				newTask.Resolve();
-				return newTask;
-			}
-		}
+        /// <summary>
+        /// Completed Task
+        /// </summary>
+        public static readonly IPandaTask CompletedTask;
 
-		/// <summary>
-		/// Returns rejected task with TaskRejectedException
-		/// </summary>
-		public static IPandaTask RejectedTask
-		{
-			get
-			{
-				var newTask = new PandaTask();
-				newTask.Reject();
-				return newTask;
-			}
-		}
-
+        /// <summary>
+        /// Canceled Task
+        /// </summary>
+        public static readonly IPandaTask CanceledTask;
+            
 		/// <summary>
 		/// Returns completed task with result
 		/// </summary>
@@ -43,16 +42,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		{
 			var resultTask = new PandaTask< T >();
 			resultTask.SetValue( result );
-			return resultTask;
-		}
-
-		/// <summary>
-		/// Returns rejected task with TaskRejectedException
-		/// </summary>
-		public static IPandaTask< T > GetRejectedTask< T >()
-		{
-			var resultTask = new PandaTask< T >();
-			resultTask.Reject();
 			return resultTask;
 		}
 
@@ -65,6 +54,16 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			resultTask.Reject( error );
 			return resultTask;
 		}
+
+        /// <summary>
+        /// Create task with TaskCanceledException.
+        /// </summary>
+        public static IPandaTask< T > GetCanceledTask< T >()
+        {
+            var resultTask = new PandaTask< T >();
+            resultTask.Reject( new TaskCanceledException() );
+            return resultTask;
+        }
 
 		/// <summary>
 		/// Returns rejected task with error
