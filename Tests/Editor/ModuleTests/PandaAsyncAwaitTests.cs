@@ -76,50 +76,52 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ThrowsOnAwaitBeforeAwait()
         {
             // arrange
-            var excpectException = new Exception();
+            var expectException = new Exception();
             async IPandaTask func()
             {
-                throw excpectException;
+                if( expectException != null )
+                    throw expectException;
                 await NonSynchronousTask();
             }
 
             //act
-            IPandaTask task = func();
+            var task = func();
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-            Assert.That( task.Error, Is.EqualTo( excpectException ) );
+            Assert.That( task.Error, Is.EqualTo( expectException ) );
         }
 
         [ Test ]
         public void ThrowsOnAwaitBeforeAwaitResult()
         {
             // arrange
-            var excpectException = new Exception();
+            var expectException = new Exception();
             async IPandaTask< int > func()
             {
-                throw excpectException;
+                if( expectException != null )
+                    throw expectException;
                 await NonSynchronousTask();
                 return 1;
             }
 
             //act
-            IPandaTask< int > task = func();
+            var task = func();
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-            Assert.That( task.Error, Is.EqualTo( excpectException ) );
+            Assert.That( task.Error, Is.EqualTo( expectException ) );
         }
 
         [ AsyncTest ]
         public async IPandaTask TrowsOnAwaitAfterAwait()
         {
             // arrange
-            var excpectException = new Exception();
+            var expectException = new Exception();
             async IPandaTask< int > func()
             {
                 await NonSynchronousTask();
-                throw excpectException;
+                throw expectException;
             }
 
             //act
@@ -134,19 +136,18 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             }
 
             //assert
-            Assert.That( realException, Is.EqualTo( excpectException ) );
+            Assert.That( realException, Is.EqualTo( expectException ) );
         }
 
         [ AsyncTest ]
         public async IPandaTask TrowsOnAwaitAfterAwaitResult()
         {
             // arrange
-            var excpectException = new Exception();
+            var expectException = new Exception();
             async IPandaTask< int > func()
             {
                 await NonSynchronousTask();
-                throw excpectException;
-                return 1;
+                throw expectException;
             }
 
             //act
@@ -161,7 +162,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             }
 
             //assert
-            Assert.That( realException, Is.EqualTo( excpectException ) );
+            Assert.That( realException, Is.EqualTo( expectException ) );
         }
 
         private IPandaTask NonSynchronousTask()
