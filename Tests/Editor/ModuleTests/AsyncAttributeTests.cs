@@ -5,6 +5,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
     // class intended to test AsyncTest attribute itself
     class AsyncAttributeTests
     {
+        private static object[][] _testCaseSource = new object[][]
+        {
+            new object[] { 1, 2, 3 }
+        };
+
         [ AsyncTest ]
         public async IPandaTask ReturnPandaTaskFromCompletedPandaTask()
         {
@@ -75,6 +80,34 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async Task ReturnSystemTaskFromSystemTaskRun()
         {
             await Task.Run( () => Task.Delay( 10 ) );
+        }
+
+        [ AsyncTest ]
+        [ AsyncTestCase(1, 2, 3) ]
+        public Task AsyncTestCaseSimpleArgs(int a, int b, int c)
+        {
+            return Task.CompletedTask;
+        }
+
+        [ AsyncTest ]
+        [ AsyncTestCase( 1, 2, 3 ) ]
+        public Task AsyncTestCaseParamsArgs( params int[] allArgs )
+        {
+            return Task.CompletedTask;
+        }
+
+        [ AsyncTest ]
+        [ AsyncTestCase( 1, 2, 3 ) ]
+        public Task AsyncTestCaseMixedArgs( int a, params int[] otherArgs )
+        {
+            return Task.CompletedTask;
+        }
+
+        [ AsyncTest ]
+        [ AsyncTestCaseSource( nameof(_testCaseSource) ) ]
+        public Task AsyncTestCaseSourceSimpleArgs( int a, int b, int c )
+        {
+            return Task.CompletedTask;
         }
     }
 }

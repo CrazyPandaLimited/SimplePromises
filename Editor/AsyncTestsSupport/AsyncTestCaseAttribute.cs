@@ -54,7 +54,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
             {
                 m.parms.HasExpectedResult = true;
                 var newMethod = builder.BuildTestMethod( new EnumeratorTaskWrapper( m.Method, asyncTest.Timeout ), suite, m.parms );
-                m.parms.HasExpectedResult = false;
+
+                // Unity takes arguments for test method from OriginalArguments (incorrect) instead of Arguments (correct)
+                // We recreate TestCaseParameters, so Arguments from m.params become OriginalArguments in newMethod.params
+                newMethod.parms = new TestCaseParameters( m.parms );
+                newMethod.parms.HasExpectedResult = false;
                 yield return newMethod;
             }
         }
