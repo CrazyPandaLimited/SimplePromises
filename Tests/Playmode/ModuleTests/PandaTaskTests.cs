@@ -2,7 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using StandardAssets.Editor;
+//using StandardAssets.Editor;
 
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
@@ -26,9 +26,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_task.Fail(  x => _realException = _realException == null ? x : null ).Done( () => _taskSuccess = true );
 		}
 
-		[ TestCase( 1 ) ]
-		[ TestCase( 3 ) ]
-		public void MultipleDoneTest( int callbackCount )
+        [ Test ]
+        public void MultipleDoneTest_1() => MultipleDoneTest( 1 );
+        
+        [ Test ]
+        public void MultipleDoneTest_3( ) => MultipleDoneTest( 3 );
+		private void MultipleDoneTest( int callbackCount )
 		{
 			//arrange
 			bool[ ] done = new bool[ callbackCount ];
@@ -37,14 +40,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 				int index = i;
 				_task.Done( () => done[ index ] = true );
 			}
-
+		
 			//act
 			_task.Resolve();
-
+		
 			//assert
 			Assert.True( done.All( x => x ) );
 		}
-
+        
 		[ Test ]
 		public void ResolveTest()
 		{
@@ -195,7 +198,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.Null( _realException );
 			Assert.AreEqual( realException, secondException );
 		}
-
+        
 		[ Test ]
 		public void ThenWithTaskTest()
 		{
@@ -205,12 +208,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//act
 			IPandaTask newtask = _task.Then( expectedCallback );
 			var castedTask = newtask as ContinuationTaskFromPandaTask;
-			var realCallback = EditorReflection.GetValue< Func< IPandaTask >, ContinuationTaskFromPandaTask >( @"_nextActionDelegate", castedTask );
-
+			var realCallback = RuntimeReflection.GetValue< Func< IPandaTask >, ContinuationTaskFromPandaTask >( @"_nextActionDelegate", castedTask );
+		
 			//assert
 			Assert.NotNull( castedTask );
 			Assert.False( castedTask.FromCatch );
-
+		
 			Assert.AreEqual( expectedCallback, realCallback );
 		}
 
@@ -259,33 +262,34 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( testException, newtask.Error );
 		}
 
+        
 		[ Test ]
 		public void CatchWithTaskTest()
 		{
 			//arrange
 			Exception realEception = null;
 			IPandaTask nextTask = new PandaTask();
-
+		
 			IPandaTask NextTaskCallback( Exception ex )
 			{
 				realEception = ex;
 				return nextTask;
 			}
-
+		
 			Exception excpectException = new Exception();
 			_task.Reject( excpectException );
-
+		
 			//act
 			IPandaTask rejectTask = _task.Catch( NextTaskCallback );
 			var castedTask = rejectTask as ContinuationTaskFromPandaTask;
-
-			var callback = EditorReflection.GetValue< Func< IPandaTask >, ContinuationTaskFromPandaTask >( @"_nextActionDelegate", castedTask );
+		
+			var callback = RuntimeReflection.GetValue< Func< IPandaTask >, ContinuationTaskFromPandaTask >( @"_nextActionDelegate", castedTask );
 			IPandaTask realTask = callback();
-
+		
 			//assert
 			Assert.NotNull( castedTask );
 			Assert.True( castedTask.FromCatch );
-
+		
 			Assert.AreEqual( realTask, nextTask );
 			Assert.AreEqual( excpectException, realEception );
 		}
