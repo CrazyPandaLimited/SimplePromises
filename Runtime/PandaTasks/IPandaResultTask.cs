@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
+#pragma warning disable CS0436 // Type conflicts with imported type
 	[AsyncMethodBuilder( typeof( PandaTaskMethodBuilder<> ) )]
+#pragma warning restore CS0436 // Type conflicts with imported type
 	public interface IPandaTask< TResult > : IPandaTask
 	{
 		#region Public Properties

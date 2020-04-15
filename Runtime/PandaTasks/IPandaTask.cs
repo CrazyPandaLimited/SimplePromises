@@ -6,7 +6,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
 	/// <summary>
 	/// Represents async operation without value
 	/// </summary>
+#pragma warning disable CS0436 // Type conflicts with imported type
 	[AsyncMethodBuilder( typeof( PandaTaskMethodBuilder ) )]
+#pragma warning restore CS0436 // Type conflicts with imported type
 	public interface IPandaTask : IDisposable
 	{
 		#region Public Properties
