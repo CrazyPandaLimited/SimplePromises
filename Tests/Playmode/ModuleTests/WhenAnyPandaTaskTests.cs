@@ -6,14 +6,15 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
     public sealed class WhenAnyPandaTaskTests
     {
-        [ Test ]
-        public void ResolveTaskTest_1_0() => ResolveTaskTest( 1, 0 );
-        [ Test ]
-        public void ResolveTaskTest_2_1() => ResolveTaskTest( 2, 1 );
-        [ Test ]
-        public void ResolveTaskTest_2_0() => ResolveTaskTest( 2, 0 );
+        private static object[][] _resolveTaskTestCaseSource = new object[][]
+        {
+            new object[] { 1, 0 },
+            new object[] { 2, 1 },
+            new object[] { 2, 0 }
+        };
         
-        private void ResolveTaskTest(int totalCount, int resolveIndex)
+        [ TestCaseSource( nameof(_resolveTaskTestCaseSource) ) ]
+        public void ResolveTaskTest(int totalCount, int resolveIndex)
         {
             //arrange
             List< PandaTask > testTasks = ConstructAnyTask( totalCount, out WhenAnyPandaTask anyTask );
@@ -25,15 +26,16 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual( PandaTaskStatus.Resolved, anyTask.Status );
             Assert.AreEqual( testTasks[ resolveIndex ], anyTask.Result );
         }
+
+        private static object[][] _rejectTaskTestCaseSource = new object[][]
+        {
+            new object[] { 1, 0 },
+            new object[] { 2, 1 },
+            new object[] { 2, 0 }
+        };
         
-        [ Test ]
-        public void RejectTaskTest_1_0() => RejectTaskTest( 1, 0 );
-        [ Test ]
-        public void RejectTaskTest_2_1() => RejectTaskTest( 2, 1 );
-        [ Test ]
-        public void RejectTaskTest_2_0() => RejectTaskTest( 2, 0 );
-        
-        private void RejectTaskTest( int totalCount, int rejectIndex )
+        [ TestCaseSource( nameof(_rejectTaskTestCaseSource) ) ]
+        public void RejectTaskTest( int totalCount, int rejectIndex )
         {
             //arrange
             List< PandaTask > testTasks = ConstructAnyTask( totalCount, out WhenAnyPandaTask anyTask );
@@ -47,12 +49,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual( realError, anyTask.Error );
         }
         
-        [ Test ]
-        public void MultipleReolveTest_3_0() => MultipleReolveTest( 3, 0 );
-        [ Test ]
-        public void MultipleReolveTest_2_1() => MultipleReolveTest( 2, 1 );
+        private static object[][] _multipleReolveTestCaseSource = new object[][]
+        {
+            new object[] { 3, 0 },
+            new object[] { 2, 1 },
+        };
         
-        private void MultipleReolveTest( int totalCount, int resolveFromIndex )
+        [ TestCaseSource( nameof(_multipleReolveTestCaseSource) ) ]
+        public void MultipleReolveTest( int totalCount, int resolveFromIndex )
         {
             //arrange
             List< PandaTask > testTasks = ConstructAnyTask( totalCount, out WhenAnyPandaTask anyTask );
@@ -68,13 +72,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual(  testTasks[ resolveFromIndex ], anyTask.Result );
         }
 
-        [ Test ]
-        public void MultipleErrorTest_3_0() => MultipleErrorTest( 3, 0 );
+        private static object[][] _multipleErrorTestCaseSource = new object[][]
+        {
+            new object[] { 3, 0 },
+            new object[] { 2, 1 },
+        };
         
-        [ Test ]
-        public void MultipleErrorTest_2_1() => MultipleErrorTest( 2, 1 );
-
-        private void MultipleErrorTest( int totalCount, int resolveFromIndex )
+        [ TestCaseSource( nameof(_multipleErrorTestCaseSource) ) ]
+        public void MultipleErrorTest( int totalCount, int resolveFromIndex )
         {
             //arrange
             List< PandaTask > testTasks = ConstructAnyTask( totalCount, out WhenAnyPandaTask anyTask );

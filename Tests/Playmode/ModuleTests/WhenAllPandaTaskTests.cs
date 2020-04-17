@@ -28,13 +28,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.Throws< InvalidOperationException >( task.Resolve );
 		}
 
+        private static object[][] _waitAllResolveTestCaseSource = new object[][]
+        {
+            new object[] { 1 },
+            new object[] { 3 },
+        };
         
-        [ Test ]
-        public void WaitAllResolveTest_1() => WaitAllResolveTest( 1 );
-        [ Test ]
-        public void WaitAllResolveTest_3() => WaitAllResolveTest( 3 );
-        
-        private void WaitAllResolveTest( int count )
+        [ TestCaseSource( nameof(_waitAllResolveTestCaseSource) ) ]
+        public void WaitAllResolveTest( int count )
 		{
 			//arrange
 			var tasksCollection = new List< PandaTask >( count );
@@ -52,13 +53,15 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.Null( task.Error );
 			Assert.AreEqual( PandaTaskStatus.Resolved, task.Status );
 		}
+
+        private static object[][] _waitAllSomeResolveTestCaseSource = new object[][]
+        {
+            new object[] { 1,0 },
+            new object[] { 3,2 },
+        };
         
-        [ Test ]
-        public void WaitAllSomeResolveTest_1_0() => WaitAllSomeResolveTest( 1, 0 );
-        [ Test ]
-        public void WaitAllSomeResolveTest_3_2() => WaitAllSomeResolveTest( 3, 2 );
-        
-		private void WaitAllSomeResolveTest( int count, int resolveCount )
+        [ TestCaseSource( nameof(_waitAllSomeResolveTestCaseSource) ) ]
+		public void WaitAllSomeResolveTest( int count, int resolveCount )
 		{
 			//arrange
 			var tasksCollection = new List< PandaTask >( count );
@@ -97,13 +100,15 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.IsInstanceOf< ObjectDisposedException >( task.Error.GetBaseException() );
 		}
 
-        [ Test ]
-        public void RejectSomeTest_4_3() => RejectSomeTest(4,3);
         
-        [ Test ]
-        public void RejectSomeTest_4_1() => RejectSomeTest(4,1);
+        private static object[][] _rejectSomeTestCaseSource = new object[][]
+        {
+            new object[] { 4,3 },
+            new object[] { 4,1 },
+        };
         
-		private void RejectSomeTest( int count, int rejectCount )
+        [ TestCaseSource( nameof(_rejectSomeTestCaseSource) ) ]
+		public void RejectSomeTest( int count, int rejectCount )
 		{
 			//arrange
 			var tasksCollection = new List< PandaTask >( count );
@@ -149,13 +154,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             CollectionAssert.AreEquivalent( tasksCollection.Select( x => x.Error ), realExceptions );
         }
 
-        [ Test ]
-        public void HalfRejectTest_2_1() => HalfRejectTest( 2, 1 );
-
-        [ Test ]
-        public void HalfRejectTest_4_2() => HalfRejectTest( 4, 2 );
+        private static object[][] _halfRejectTestCaseSource = new object[][]
+        {
+            new object[] { 2,1 },
+            new object[] { 4,2 },
+        };
         
-        private void HalfRejectTest( int count, int rejectCount )
+        [ TestCaseSource( nameof(_halfRejectTestCaseSource) ) ]
+        public void HalfRejectTest( int count, int rejectCount )
         {
             //arrange
             var tasksCollection = new List< PandaTask >( count );
@@ -187,13 +193,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             CollectionAssert.AreEquivalent( tasksCollection.Where( x => x.Status == PandaTaskStatus.Rejected ).Select( x => x.Error ), realExceptions );
         }
 
-        [ Test ]
-        public void InitFirstResolvedTest_2() => InitFirstResolvedTest( 2 );
+        private static object[][] _initFirstResolvedTestCaseSource = new object[][]
+        {
+            new object[] { 2 },
+            new object[] { 5 },
+        };
         
-        [ Test ]
-        public void InitFirstResolvedTest_5() => InitFirstResolvedTest( 5 );
-        
-		private void InitFirstResolvedTest( int count )
+        [ TestCaseSource( nameof(_initFirstResolvedTestCaseSource) ) ]
+		public void InitFirstResolvedTest( int count )
 		{
 			//arrange
 			var tasksCollection = new List< PandaTask >( count );
@@ -211,13 +218,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Pending, task.Status );
 		}
 
-        [ Test ]
-        public void InitResolvedTest_1() => InitResolvedTest( 1 );
+        private static object[][] _initResolvedTestCaseSource = new object[][]
+        {
+            new object[] { 1 },
+            new object[] { 5 },
+        };
         
-        [ Test ]
-        public void InitResolvedTest_5() => InitResolvedTest( 5 );
-        
-		private void InitResolvedTest( int count )
+        [ TestCaseSource( nameof(_initResolvedTestCaseSource) ) ]
+		public void InitResolvedTest( int count )
 		{
 			//arrange
 			var tasksCollection = new List< IPandaTask >( count );

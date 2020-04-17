@@ -25,13 +25,15 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_realException = null;
 			_task.Fail(  x => _realException = _realException == null ? x : null ).Done( () => _taskSuccess = true );
 		}
-
-        [ Test ]
-        public void MultipleDoneTest_1() => MultipleDoneTest( 1 );
         
-        [ Test ]
-        public void MultipleDoneTest_3( ) => MultipleDoneTest( 3 );
-		private void MultipleDoneTest( int callbackCount )
+        private static object[][] _multipleDoneTestCaseSource = new object[][]
+        {
+            new object[] { 1 },
+            new object[] { 3 },
+        };
+        
+        [ TestCaseSource( nameof(_multipleDoneTestCaseSource) ) ]
+		public void MultipleDoneTest( int callbackCount )
 		{
 			//arrange
 			bool[ ] done = new bool[ callbackCount ];
