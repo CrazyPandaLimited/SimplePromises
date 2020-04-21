@@ -126,8 +126,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             // act            
             a = true;
-            await Task.Delay( 1 );
-
+            
+            await PandaTasksUtilitys.Delay( 1 );
+            
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
         }
@@ -143,7 +144,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             // act            
             a = true;
             tokenSource.Cancel();
-            await Task.Delay( 1 );
+            
+            await PandaTasksUtilitys.Delay( 1 );
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
@@ -157,7 +159,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var task = PandaTasksUtilitys.WaitWhile( () => throw new InvalidOperationException() );
 
             // act
-            await Task.Delay( 1 );
+            
+            await PandaTasksUtilitys.Delay( 1 );
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );

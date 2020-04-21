@@ -61,27 +61,30 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ AsyncTest ]
         public async IPandaTask ReturnPandaTaskFromSystemTaskDelay()
         {
-            await Task.Delay( 10 );
+            await PandaTasksUtilitys.Delay( 10 );
         }
 
         [ AsyncTest ]
         public async Task ReturnSystemTaskFromSystemTaskDelay()
         {
-            await Task.Delay( 10 );
+            await PandaTasksUtilitys.Delay( 10 );
         }
 
+#if !UNITY_WEBGL
         [ AsyncTest ]
         public async IPandaTask ReturnPandaTaskFromSystemTaskRun()
         {
             await Task.Run( () => Task.Delay( 10 ) );
         }
-
+#endif
+        
+#if !UNITY_WEBGL
         [ AsyncTest ]
         public async Task ReturnSystemTaskFromSystemTaskRun()
         {
             await Task.Run( () => Task.Delay( 10 ) );
         }
-
+#endif
         // [ AsyncTest ]
         // [ AsyncTestCase(1, 2, 3) ]
         // public Task AsyncTestCaseSimpleArgs(int a, int b, int c)
