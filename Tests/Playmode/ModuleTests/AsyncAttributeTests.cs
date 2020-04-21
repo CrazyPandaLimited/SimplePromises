@@ -85,27 +85,27 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             await Task.Run( () => Task.Delay( 10 ) );
         }
 #endif
-        // [ AsyncTest ]
-        // [ AsyncTestCase(1, 2, 3) ]
-        // public Task AsyncTestCaseSimpleArgs(int a, int b, int c)
-        // {
-        //     return Task.CompletedTask;
-        // }
-        //
-        // [ AsyncTest ]
-        // [ AsyncTestCase( 1, 2, 3 ) ]
-        // public Task AsyncTestCaseParamsArgs( params int[] allArgs )
-        // {
-        //     return Task.CompletedTask;
-        // }
-        //
-        // [ AsyncTest ]
-        // [ AsyncTestCase( 1, 2, 3 ) ]
-        // public Task AsyncTestCaseMixedArgs( int a, params int[] otherArgs )
-        // {
-        //     return Task.CompletedTask;
-        // }
-        //
+        [ AsyncTest ]
+        [ AsyncTestCase(1, 2, 3) ]
+        public Task AsyncTestCaseSimpleArgs(int a, int b, int c)
+        {
+            return Task.CompletedTask;
+        }
+        
+        [ AsyncTest ]
+        [ AsyncTestCase( 1, 2, 3 ) ]
+        public Task AsyncTestCaseParamsArgs( params int[] allArgs )
+        {
+            return Task.CompletedTask;
+        }
+        
+        [ AsyncTest ]
+        [ AsyncTestCase( 1, 2, 3 ) ]
+        public Task AsyncTestCaseMixedArgs( int a, params int[] otherArgs )
+        {
+            return Task.CompletedTask;
+        }
+        
         [ AsyncTest ]
         [ AsyncTestCaseSource( nameof(_testCaseSource) ) ]
         public Task AsyncTestCaseSourceSimpleArgs( int a, int b, int c )
