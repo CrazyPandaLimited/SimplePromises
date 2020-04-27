@@ -34,14 +34,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			Assert.AreEqual( PandaTaskStatus.Resolved, task.Status );
 		}
 		
-        private static object[][] _noResolveSequnceTestCaseSource = new object[][]
-        {
-            new object[] { 0, 4 },
-            new object[] { 2, 4 },
-            new object[] { 3, 4 },
-        };
-        
-        [ TestCaseSource( nameof(_noResolveSequnceTestCaseSource) ) ]
+        [TestCase(0, 4)]
+        [TestCase(2, 4 )]
+        [TestCase(3, 4 )]
 		public void NoResolveSequnceTest( int completedCount, int count )
 		{
 			//arrange
@@ -62,15 +57,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			//assert
 			Assert.AreEqual( PandaTaskStatus.Pending, task.Status );
 		}
-		
-		
-        private static object[][] _rejectSequnceTaskTestCaseSource = new object[][]
-        {
-            new object[] { 0, 4 },
-            new object[] { 3, 4 },
-        };
-        
-        [ TestCaseSource( nameof(_rejectSequnceTaskTestCaseSource) ) ]
+
+        [TestCase(0, 4)]
+        [TestCase(3, 4)]
 		public void RejectSequnceTaskTest( int rejectIndex, int count )
 		{
 			//arrange

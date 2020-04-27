@@ -6,14 +6,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
     public sealed class WhenAnyPandaTaskTests
     {
-        private static object[][] _resolveTaskTestCaseSource = new object[][]
-        {
-            new object[] { 1, 0 },
-            new object[] { 2, 1 },
-            new object[] { 2, 0 }
-        };
-        
-        [ TestCaseSource( nameof(_resolveTaskTestCaseSource) ) ]
+        [TestCase(1,0)]
+        [TestCase(2,1)]
+        [TestCase(2,0)]
         public void ResolveTaskTest(int totalCount, int resolveIndex)
         {
             //arrange
@@ -27,14 +22,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual( testTasks[ resolveIndex ], anyTask.Result );
         }
 
-        private static object[][] _rejectTaskTestCaseSource = new object[][]
-        {
-            new object[] { 1, 0 },
-            new object[] { 2, 1 },
-            new object[] { 2, 0 }
-        };
-        
-        [ TestCaseSource( nameof(_rejectTaskTestCaseSource) ) ]
+        [TestCase(1,0)]
+        [TestCase(2,1)]
+        [TestCase(2,0)]
         public void RejectTaskTest( int totalCount, int rejectIndex )
         {
             //arrange
@@ -49,13 +39,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual( realError, anyTask.Error );
         }
         
-        private static object[][] _multipleReolveTestCaseSource = new object[][]
-        {
-            new object[] { 3, 0 },
-            new object[] { 2, 1 },
-        };
-        
-        [ TestCaseSource( nameof(_multipleReolveTestCaseSource) ) ]
+        [ TestCase( 3, 0 ) ]
+        [ TestCase( 2, 1 ) ]
         public void MultipleReolveTest( int totalCount, int resolveFromIndex )
         {
             //arrange
@@ -72,13 +57,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual(  testTasks[ resolveFromIndex ], anyTask.Result );
         }
 
-        private static object[][] _multipleErrorTestCaseSource = new object[][]
-        {
-            new object[] { 3, 0 },
-            new object[] { 2, 1 },
-        };
-        
-        [ TestCaseSource( nameof(_multipleErrorTestCaseSource) ) ]
+        [ TestCase( 3, 0 ) ]
+        [ TestCase( 2, 1 ) ]
         public void MultipleErrorTest( int totalCount, int resolveFromIndex )
         {
             //arrange
