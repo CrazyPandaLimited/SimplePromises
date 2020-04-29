@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
-	/// <summary>
-	/// Task waits for all inner tasks for complete.
-	/// If one of task has error it will wait other before set reject status.
-	/// </summary>
-	internal sealed class WhenAllPandaTask : PandaTask
-	{
-		#region Private Fields
+    /// <summary>
+    /// Task waits for all inner tasks for complete.
+    /// If one of task has error it will wait other before set reject status.
+    /// </summary>
+    internal sealed class WhenAllPandaTask : PandaTask
+    {
+        #region Private Fields
         //for safe memory without errors
-        private object _errors;
-		private int _waitingCount;
-		#endregion
+        private int _failCount;
+        private int _waitingCount;
+        private readonly CancellationStrategy _strategy;
+        private readonly IEnumerable< IPandaTask > _tasksCollection;
+        #endregion
 
-		#region Constructors
-		internal WhenAllPandaTask( IEnumerable< IPandaTask > tasksCollection )
-		{
-			//check arguments
-			if( tasksCollection == null )
-			{
-				throw new ArgumentNullException( nameof(tasksCollection) );
-			}
-
-            _waitingCount = 1;
+        #region Constructors
+        internal WhenAllPandaTask( IEnumerable< IPandaTask > tasksCollection, CancellationStrategy strategy )
+        {
+            //check arguments
+            _strategy = strategy;
+            _tasksCollection = tasksCollection ?? throw new ArgumentNullException( nameof(tasksCollection) );
 
             //add handlers
-            foreach( IPandaTask task in tasksCollection )
+            _waitingCount = 1;
+            foreach( IPandaTask task in _tasksCollection )
             {
                 //check null
                 if( task == null )
@@ -36,14 +37,15 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 }
 
                 //start wait complete of tasks
+                _failCount++;
                 _waitingCount++;
                 switch( task.Status )
                 {
                     case PandaTaskStatus.Pending:
-                        task.Done( CompleteTask ).Fail( HandleTaskCompleteWithError );
+                        task.Done( CompleteTask ).Fail( CompleteWithError );
                         break;
                     case PandaTaskStatus.Rejected:
-                        HandleTaskCompleteWithError( task.Error );
+                        CompleteWithError( task.Error );
                         break;
                     case PandaTaskStatus.Resolved:
                         CompleteTask();
@@ -51,66 +53,84 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 }
             }
 
-            CompleteTask();
+            CompleteWithError( null );
         }
-		#endregion
+        #endregion
 
-		#region Private Members
-		internal override void Resolve()
-		{
-			throw new InvalidOperationException( @"ThenAllPandaTask cannot be resolved" );
-		}
+        #region Private Members
+        internal override void Resolve()
+        {
+            throw new InvalidOperationException( @"ThenAllPandaTask cannot be resolved" );
+        }
 
         /// <summary>
         /// Handle for error task complete
         /// </summary>
-        private void HandleTaskCompleteWithError( Exception error )
+        private void CompleteWithError( Exception error )
         {
-            switch( _errors )
-            {
-                case Exception firstError:
-                    _errors = new List< Exception > { firstError, error };
-                    break;
-                case List< Exception > errorsList:
-                    errorsList.Add( error );
-                    break;
-                case null:
-                    _errors = error;
-                    break;
-            }
+            //remove task
+            _waitingCount--;
 
-            CompleteTask();
+            //check complete
+            CheckCompletion();
         }
 
-		/// <summary>
-		/// Complete task with end check
-		/// </summary>
-		private void CompleteTask()
-		{
-			//remove task
-			_waitingCount--;
+        /// <summary>
+        /// Complete task with end check
+        /// </summary>
+        private void CompleteTask()
+        {
+            //remove task
+            _failCount--;
 
-			//check complete
-			CheckCompletion();
-		}
+            //check complete
+            CompleteWithError( null );
+        }
 
         private void CheckCompletion()
         {
             if( Status == PandaTaskStatus.Pending && _waitingCount == 0 )
             {
-                switch( _errors )
+                //to protect from enumerator allocation without errors.
+                if( _failCount == 0 )
                 {
-                    case Exception firstError:
-                        Reject( new AggregateException( firstError ) );
-                        break;
-                    case List< Exception > errorsList:
-                        Reject( new AggregateException( errorsList ) );
-                        break;
-                    case null:
-                        base.Resolve();
-                        break;
+                    base.Resolve();
+                }
+                else
+                {
+                    var errors = _tasksCollection.Select( x => x.Error );
+                    switch( _strategy )
+                    {
+                        case CancellationStrategy.Aggregate:
+                            AggregateReject( errors );
+                            break;
+                        case CancellationStrategy.FullCancel:
+                            TryCancel( errors );
+                            break;
+                        case CancellationStrategy.PartCancel:
+                            TryCancel( errors.Where( x => !ReferenceEquals( x, null ) ) );
+                            break;
+                    }
                 }
             }
+        }
+
+        private void TryCancel( IEnumerable< Exception > errors )
+        {
+            if( errors.All( x => x is TaskCanceledException ) )
+            {
+                Reject( new TaskCanceledException() );
+            }
+            else
+            {
+                AggregateReject( errors );
+            }
+        }
+
+        private void AggregateReject( IEnumerable< Exception > errors )
+        {
+            var error = new AggregateException( errors.Where( x => !ReferenceEquals( x, null ) ) );
+            Reject( error );
         }
         #endregion
     }

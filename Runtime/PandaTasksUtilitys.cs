@@ -104,23 +104,44 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		}
 
         /// <summary>
-        /// Creates task for waiting all tasks
+        /// Creates task for waiting all tasks.
         /// </summary>
         public static IPandaTask WaitAll( params IPandaTask[ ] tasks )
         {
-            return new WhenAllPandaTask( tasks );
+            return new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
         }
 
         /// <summary>
-        /// Creates task for waiting all tasks
+        /// Creates task for waiting all tasks.
         /// </summary>
-        public static IPandaTask WaitAll( IEnumerable< IPandaTask > tasksCollection )
+        /// <param name="tasks">task`s collection</param>
+        public static IPandaTask WaitAll( IEnumerable< IPandaTask > tasks )
         {
-            return new WhenAllPandaTask( tasksCollection );
+            return new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
         }
 
         /// <summary>
-        /// Creates task for waiting first completed of rejected of tasks
+        /// Creates task for waiting all tasks.
+        /// </summary>
+        /// <param name="strategy">strategy for TaskCanceledException`s aggregation</param>
+        /// <param name="tasks">task`s collection</param>
+        public static IPandaTask WaitAll( CancellationStrategy strategy, params IPandaTask[ ] tasks )
+        {
+            return new WhenAllPandaTask( tasks, strategy );
+        }
+
+        /// <summary>
+        /// Creates task for waiting all tasks.
+        /// </summary>
+        /// <param name="strategy">strategy for TaskCanceledException`s aggregation</param>
+        /// <param name="tasks">task`s collection</param>
+        public static IPandaTask WaitAll( CancellationStrategy strategy, IEnumerable< IPandaTask > tasks )
+        {
+            return new WhenAllPandaTask( tasks, strategy );
+        }
+
+        /// <summary>
+        /// Creates task for waiting first completed of rejected of tasks.
         /// </summary>
         public static IPandaTask WaitAny( params IPandaTask[ ] tasksCollection )
         {
@@ -140,9 +161,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="condition">Condition to check</param>
         /// <exception cref="ArgumentNullException">Thrown if condition is null</exception>
-        public static IPandaTask WaitWhile( Func<bool> condition )
+        public static IPandaTask WaitWhile( Func< bool > condition )
         {
-            return WaitWhile(condition, new CancellationToken() );
+            return WaitWhile( condition, new CancellationToken() );
         }
 
         /// <summary>
@@ -271,6 +292,27 @@ namespace CrazyPanda.UnityCore.PandaTasks
             var tcs = new PandaTaskCompletionSource();
             resultTask = tcs.Task;
             return tcs.Resolve;
+        }
+
+        /// <summary>
+        /// Return exception to stack. Must be in Unity thread!
+        /// </summary>
+        /// <param name="task">source task</param>
+        /// <param name="ignoreCancel">ignore TaskCanceledException</param>
+        public static void RethrowError( this IPandaTask task, bool ignoreCancel = false )
+        {
+            //throw
+            task.Fail( x =>
+            {
+                //not throw if no task canceled exception mode.
+                if( ignoreCancel && x is TaskCanceledException )
+                {
+                    return;
+                }
+				
+                //throw to stack.
+                task.ThrowIfError();
+            } );
         }
         #endregion
     }

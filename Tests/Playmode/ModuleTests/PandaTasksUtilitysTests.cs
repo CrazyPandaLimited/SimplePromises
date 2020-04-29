@@ -148,12 +148,19 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var task = PandaTasksUtilitys.WaitWhile( () => throw new InvalidOperationException() );
 
             // act
-            
             await PandaTasksUtilitys.Delay( 1 );
 
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
             Assert.That( task.Error, Is.InstanceOf< InvalidOperationException >() );
+        }
+
+        [ Test ]
+        public void ThrowIfErrorTest()
+        {
+            //act-assert
+            Exception testError = new Exception();
+            Assert.Throws< Exception >( PandaTasksUtilitys.GetTaskWithError( testError ).ThrowIfError );
         }
     }
 }
