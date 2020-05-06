@@ -119,11 +119,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 					RejectInternal( new NullReferenceException( @"Continuation callback returns null task!" ) );
 				}
 			}
-			catch( SystemException )
-			{
-				//not catch for system exceptions!
-				throw;
-			}
 			catch( Exception ex )
 			{
 				//reject on non system exceptions

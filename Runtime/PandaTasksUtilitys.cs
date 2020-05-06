@@ -314,6 +314,86 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 task.ThrowIfError();
             } );
         }
+
+        /// <summary>
+        /// Adds timeout handling for given task. If it does not complete within given time an exception will be thrown
+        /// </summary>
+        /// <param name="task">Source task</param>
+        /// <param name="milliseconds">Timeout in milliseconds</param>
+        /// <param name="timeoutMessage">Message for exception</param>
+        /// <exception cref="ArgumentException">Thrown if time is negative</exception>
+        /// <exception cref="TimeoutException" />
+        public static IPandaTask OrTimeout( this IPandaTask task, int milliseconds, string timeoutMessage = null )
+        {
+            return OrTimeout( task, TimeSpan.FromMilliseconds( milliseconds ), timeoutMessage );
+        }
+
+        /// <summary>
+        /// Adds timeout handling for given task. If it does not complete within given time an exception will be thrown
+        /// </summary>
+        /// <param name="task">Source task</param>
+        /// <param name="milliseconds">Timeout in milliseconds</param>
+        /// <param name="timeoutMessage">Message for exception</param>
+        /// <exception cref="ArgumentException">Thrown if time is negative</exception>
+        /// <exception cref="TimeoutException" />
+        public static IPandaTask< T > OrTimeout< T >( this IPandaTask< T > task, int milliseconds, string timeoutMessage = null )
+        {
+            return OrTimeout( task, TimeSpan.FromMilliseconds( milliseconds ), timeoutMessage );
+        }
+
+        /// <summary>
+        /// Adds timeout handling for given task. If it does not complete within given time an exception will be thrown
+        /// </summary>
+        /// <param name="task">Source task</param>
+        /// <param name="timeout">Timeout time</param>
+        /// <param name="timeoutMessage">Message for exception</param>
+        /// <exception cref="ArgumentException">Thrown if time is negative</exception>
+        /// <exception cref="TimeoutException" />
+        public static IPandaTask OrTimeout( this IPandaTask task, TimeSpan timeout, string timeoutMessage = null )
+        {
+            if( task.Status != PandaTaskStatus.Pending )
+                return task;
+
+            var delay = Delay( timeout );
+            var t = new WhenAnyPandaTask( new[] { task, delay } );
+
+            return t.Then( completedTask =>
+            {
+                if( completedTask == delay )
+                {
+                    throw new TimeoutException( ( timeoutMessage ?? $"Task timeout" ) + $" {timeout.TotalSeconds} s" );
+                }
+
+                return task;
+            } );
+        }
+
+        /// <summary>
+        /// Adds timeout handling for given task. If it does not complete within given time an exception will be thrown
+        /// </summary>
+        /// <param name="task">Source task</param>
+        /// <param name="timeout">Timeout time</param>
+        /// <param name="timeoutMessage">Message for exception</param>
+        /// <exception cref="ArgumentException">Thrown if time is negative</exception>
+        /// <exception cref="TimeoutException" />
+        public static IPandaTask< T > OrTimeout< T >( this IPandaTask< T > task, TimeSpan timeout, string timeoutMessage = null )
+        {
+            if( task.Status != PandaTaskStatus.Pending )
+                return task;
+
+            var delay = Delay( timeout );
+            var t = new WhenAnyPandaTask( new[] { task, delay } );
+
+            return t.Then( completedTask =>
+            {
+                if( completedTask == delay )
+                {
+                    throw new TimeoutException( ( timeoutMessage ?? $"Task timeout" ) + $" {timeout.TotalSeconds} s" );
+                }
+
+                return task;
+            } );
+        }
         #endregion
     }
 }
