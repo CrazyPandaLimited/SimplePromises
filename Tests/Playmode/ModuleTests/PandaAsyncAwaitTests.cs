@@ -3,6 +3,7 @@ using System;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     class PandaAsyncAwaitTests
     {
         [ AsyncTest ]

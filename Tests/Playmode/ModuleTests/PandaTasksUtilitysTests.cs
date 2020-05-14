@@ -6,7 +6,8 @@ using System.Threading;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-	public sealed class PandaTasksUtilitysTests
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
+    public sealed class PandaTasksUtilitysTests
 	{
 		[ Test ]
 		public void NullSequenceTest()

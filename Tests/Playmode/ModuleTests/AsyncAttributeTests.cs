@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
     // class intended to test AsyncTest attribute itself
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     class AsyncAttributeTests
     {
         private static object[][] _testCaseSource = new object[][]

@@ -4,7 +4,8 @@ using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-	public sealed class ResultContinuationTaskFromPandaTaskTest
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
+    public sealed class ResultContinuationTaskFromPandaTaskTest
 	{
 		[ Test ]
 		public void CreateTest()

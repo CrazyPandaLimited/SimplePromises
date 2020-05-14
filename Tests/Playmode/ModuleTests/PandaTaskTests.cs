@@ -7,7 +7,8 @@ using NUnit.Framework.Internal;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-	public sealed class PandaTaskTests
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
+    public sealed class PandaTaskTests
 	{
 		private PandaTask _task;
 
