@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace CrazyPanda.UnityCore.PandaTasks
@@ -12,48 +13,49 @@ namespace CrazyPanda.UnityCore.PandaTasks
     internal sealed class WhenAllPandaTask : PandaTask
     {
         #region Private Fields
-        //for safe memory without errors
-        private int _failCount;
+        private object _error;
+        private bool _allFailed;
         private int _waitingCount;
+
         private readonly CancellationStrategy _strategy;
-        private readonly IEnumerable< IPandaTask > _tasksCollection;
         #endregion
 
         #region Constructors
         internal WhenAllPandaTask( IEnumerable< IPandaTask > tasksCollection, CancellationStrategy strategy )
         {
-            //check arguments
+            //check-set
             _strategy = strategy;
-            _tasksCollection = tasksCollection ?? throw new ArgumentNullException( nameof(tasksCollection) );
-
-            //add handlers
-            _waitingCount = 1;
-            foreach( IPandaTask task in _tasksCollection )
+            if( tasksCollection == null )
             {
-                //check null
+                throw new ArgumentNullException( nameof(tasksCollection) );
+            }
+
+            //To protect for first complete task.
+            _waitingCount = 1;
+            _allFailed = true;
+            foreach( IPandaTask task in tasksCollection )
+            {
                 if( task == null )
                 {
                     throw new ArgumentException( @"One of the tasks is null", nameof(tasksCollection) );
                 }
 
-                //start wait complete of tasks
-                _failCount++;
                 _waitingCount++;
                 switch( task.Status )
                 {
                     case PandaTaskStatus.Pending:
-                        task.Done( CompleteTask ).Fail( CompleteWithError );
+                        task.Done( CompleteSuccess ).Fail( CompleteWithError );
                         break;
                     case PandaTaskStatus.Rejected:
                         CompleteWithError( task.Error );
                         break;
                     case PandaTaskStatus.Resolved:
-                        CompleteTask();
+                        CompleteSuccess();
                         break;
                 }
             }
 
-            CompleteWithError( null );
+            CheckCompletion();
         }
         #endregion
 
@@ -68,8 +70,19 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         private void CompleteWithError( Exception error )
         {
-            //remove task
-            _waitingCount--;
+            //add error
+            switch( _error )
+            {
+                case Exception oldError:
+                    _error = new List< Exception > { error, oldError };
+                    break;
+                case List< Exception > errorsList:
+                    errorsList.Add( error );
+                    break;
+                case null:
+                    _error = error;
+                    break;
+            }
 
             //check complete
             CheckCompletion();
@@ -78,59 +91,43 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Complete task with end check
         /// </summary>
-        private void CompleteTask()
+        private void CompleteSuccess()
         {
-            //remove task
-            _failCount--;
-
-            //check complete
-            CompleteWithError( null );
+            _allFailed = false;
+            CheckCompletion();
         }
 
+        /// <summary>
+        /// Check if all tasks is completed.
+        /// </summary>
         private void CheckCompletion()
         {
+            _waitingCount--;
             if( Status == PandaTaskStatus.Pending && _waitingCount == 0 )
             {
-                //to protect from enumerator allocation without errors.
-                if( _failCount == 0 )
+                switch( _error )
                 {
-                    base.Resolve();
-                }
-                else
-                {
-                    var errors = _tasksCollection.Select( x => x.Error );
-                    switch( _strategy )
-                    {
-                        case CancellationStrategy.Aggregate:
-                            AggregateReject( errors );
-                            break;
-                        case CancellationStrategy.FullCancel:
-                            TryCancel( errors );
-                            break;
-                        case CancellationStrategy.PartCancel:
-                            TryCancel( errors.Where( x => !ReferenceEquals( x, null ) ) );
-                            break;
-                    }
+                    case null:
+                        base.Resolve();
+                        break;
+                    case Exception error:
+                        bool aggregate = CanAggregate() && error is TaskCanceledException;
+                        var rejectError = aggregate ? new TaskCanceledException() : (Exception)new AggregateException( error );
+                        Reject( rejectError );
+                        break;
+                    case List< Exception > errorsList:
+                        aggregate = CanAggregate() && errorsList.All( x => x is TaskCanceledException );
+                        rejectError = aggregate ? new TaskCanceledException() : (Exception)new AggregateException( errorsList );
+                        Reject( rejectError );
+                        break;
                 }
             }
         }
 
-        private void TryCancel( IEnumerable< Exception > errors )
+        [ MethodImpl( MethodImplOptions.AggressiveInlining ) ]
+        private bool CanAggregate()
         {
-            if( errors.All( x => x is TaskCanceledException ) )
-            {
-                Reject( new TaskCanceledException() );
-            }
-            else
-            {
-                AggregateReject( errors );
-            }
-        }
-
-        private void AggregateReject( IEnumerable< Exception > errors )
-        {
-            var error = new AggregateException( errors.Where( x => !ReferenceEquals( x, null ) ) );
-            Reject( error );
+            return _strategy == CancellationStrategy.PartCancel || _strategy == CancellationStrategy.FullCancel && _allFailed;
         }
         #endregion
     }

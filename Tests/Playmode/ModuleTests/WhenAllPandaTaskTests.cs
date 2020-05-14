@@ -287,5 +287,71 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.AreEqual( PandaTaskStatus.Rejected, task.Status );
             Assert.IsInstanceOf< AggregateException >( task.Error );
         }
+
+        [ Test ]
+        public void ChangeCollectionCompleteTest()
+        {
+            //arrange
+            var source = new PandaTaskCompletionSource();
+            var tasks = new List< IPandaTask >
+            {
+                PandaTasksUtilitys.CompletedTask,
+                source.Task
+            };
+
+            var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
+            tasks.Add( new PandaTask() );
+
+            //act
+            source.Resolve();
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Resolved, allTask.Status );
+        }
+
+        [ Test ]
+        public void ChangeCollectionCompleteErrorTest()
+        {
+            //arrange
+            var source = new PandaTaskCompletionSource();
+            var tasks = new List< IPandaTask >
+            {
+                PandaTasksUtilitys.CompletedTask,
+                source.Task
+            };
+
+            var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
+            tasks.Add( PandaTasksUtilitys.CanceledTask );
+
+            //act
+            source.Resolve();
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Resolved, allTask.Status );
+        }
+
+        [ Test ]
+        public void ChangeCollectionCompleteWithErrorTest()
+        {
+            //arrange
+            var source = new PandaTaskCompletionSource();
+            var tasks = new List< IPandaTask >
+            {
+                PandaTasksUtilitys.CompletedTask,
+                source.Task
+            };
+
+            var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
+            tasks.Add( PandaTasksUtilitys.CanceledTask );
+
+            //act
+            var testError = new Exception();
+            source.SetError( testError );
+
+            //assert
+            Assert.AreEqual( PandaTaskStatus.Rejected, allTask.Status );
+            Assert.IsInstanceOf< AggregateException >( allTask.Error );
+            CollectionAssert.AreEqual( new[] { testError }, (( AggregateException )allTask.Error).InnerExceptions );
+        }
     }
 }
