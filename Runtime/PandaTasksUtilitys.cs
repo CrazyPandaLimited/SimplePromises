@@ -19,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
             CompletedTask = completedTask;
 
             var canceledTask = new PandaTask();
-            canceledTask.Reject( new TaskCanceledException() );
+            canceledTask.Cancel();
             CanceledTask = canceledTask;
         }
         #endregion
@@ -179,29 +179,12 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 throw new ArgumentNullException( nameof(condition), "Condition is null" );
             }
 
-            var task = new PandaTask();
-
-            // this function will post itself to current SynchronizationContext until the time passes
-            // UnitySynchronizationContext will process posted tasks each frame so this is equivalent to Update()
-            void Ticker(object t)
+            if( token.IsCancellationRequested )
             {
-                try
-                {
-                    if(token.IsCancellationRequested)
-                        (t as PandaTask).Reject();
-                    else if( !condition() )
-                        (t as PandaTask).Resolve();
-                    else
-                        SynchronizationContext.Current.Post( Ticker, t );
-                }
-                catch( Exception ex )
-                {
-                    (t as PandaTask).Reject( ex );
-                }
+                return CanceledTask;
             }
 
-            Ticker(task);
-            return task;
+            return new WaitWhilePandaTask( condition, token );
         }
 
         /// <summary>
@@ -243,30 +226,17 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <exception cref="ArgumentException">Thrown if time is negative</exception>
         public static IPandaTask Delay( TimeSpan time, CancellationToken token )
         {
-            if(time.Ticks < 0)
+            if( time.Ticks < 0 )
             {
-                throw new ArgumentException("Time can not be negative", nameof(time));
+                throw new ArgumentException( "Time can not be negative", nameof( time ) );
             }
 
-            var start = DateTime.Now;
-            var task = new PandaTask();
-
-            // this function will post itself to current SynchronizationContext until the time passes
-            // UnitySynchronizationContext will process posted tasks each frame so this is equivalent to Update()
-            void Ticker( object t )
+            if( token.IsCancellationRequested )
             {
-                var now = DateTime.Now;
-
-                if( token.IsCancellationRequested)
-                    (t as PandaTask).Reject();
-                if( now - start >= time )
-                    (t as PandaTask).Resolve();
-                else
-                    SynchronizationContext.Current.Post( Ticker, t );
+                return CanceledTask;
             }
 
-            Ticker(task);
-            return task;
+            return new DelayPandaTask( time, token );
         }
 
         /// <summary>

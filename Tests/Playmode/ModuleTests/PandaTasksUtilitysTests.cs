@@ -85,7 +85,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 		}
 
         [ Test ]
-        public void WaitWhileWhenTrue()
+        public void WaitWhile_Should_Return_Resolved_WhenConditionIsTrueInitial()
         {
             // arrange
             bool a = true;
@@ -96,7 +96,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         }
 
         [ Test ]
-        public void WaitWhileWhenFalse()
+        public void WaitWhile_Should_Return_Pending_WhenConditionIsFalseInitial()
         {
             // arrange
             bool a = false;
@@ -107,7 +107,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         }
 
         [ AsyncTest ]
-        public async Task WaitWhileCompleteAfterChange()
+        public async Task WaitWhile_Should_Resolve_AfterConditionChange()
         {
             // arrange
             bool a = false;
@@ -123,8 +123,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
         }
 
-        [ AsyncTest ]
-        public async Task WaitWhileCancel()
+        [ Test ]
+        public void WaitWhile_Should_Cancel()
         {
             // arrange
             bool a = false;
@@ -135,15 +135,13 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             a = true;
             tokenSource.Cancel();
             
-            await PandaTasksUtilitys.Delay( 1 );
-
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
-            Assert.That( task.Error, Is.InstanceOf< TaskRejectedException >() );
+            Assert.That( task.Error, Is.InstanceOf< TaskCanceledException >() );
         }
 
         [ AsyncTest ]
-        public async Task WaitWhileRaiseException()
+        public async Task WaitWhile_Should_RaiseException_FromCondition()
         {
             // arrange
             var task = PandaTasksUtilitys.WaitWhile( () => throw new InvalidOperationException() );
@@ -157,7 +155,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         }
 
         [ Test ]
-        public void ThrowIfErrorTest()
+        public void ThrowIfError_Should_Throw()
         {
             //act-assert
             Exception testError = new Exception();
@@ -181,6 +179,21 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void Delay_Should_Throw_WithNegativeTime()
         {
             Assert.That( () => PandaTasksUtilitys.Delay( -1 ), Throws.ArgumentException );
+        }
+
+        [Test]
+        public void Delay_Should_Cancel()
+        {
+            // arrange
+            var tokenSource = new CancellationTokenSource();
+            var task = PandaTasksUtilitys.Delay( 100, tokenSource.Token );
+
+            // act
+            tokenSource.Cancel();
+
+            // assert
+            Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+            Assert.That( task.Error, Is.InstanceOf< TaskCanceledException >() );
         }
 
         [ AsyncTest ]

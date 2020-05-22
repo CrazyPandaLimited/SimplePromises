@@ -3,7 +3,7 @@ using System.Diagnostics;
 using UnityEngine;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-
+using System.Threading.Tasks;
 
 [ assembly: InternalsVisibleTo( @"Assembly-CSharp-Editor" ) ]
 namespace CrazyPanda.UnityCore.PandaTasks
@@ -189,7 +189,15 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			_failAction?.Invoke( Error );
 			_failAction = null;
 		}
-		#endregion
+
+        /// <summary>
+        /// Helper method for creating Cancelled task
+        /// </summary>
+        internal void Cancel()
+        {
+            Reject( new TaskCanceledException() );
+        }
+        #endregion
 
 		#region Protected Members
 		/// <summary>
