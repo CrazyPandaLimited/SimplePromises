@@ -11,7 +11,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             _condition = condition;
 
-            cancellationToken.Register( TryCancel );
+            cancellationToken.Register( Cancel );
             Tick( this );
         }
 

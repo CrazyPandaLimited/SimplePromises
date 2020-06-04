@@ -19,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
             CompletedTask = completedTask;
 
             var canceledTask = new PandaTask();
-            canceledTask.TryCancel();
+            canceledTask.Cancel();
             CanceledTask = canceledTask;
         }
         #endregion
@@ -157,7 +157,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
 
         /// <summary>
-        /// Returns task waiting for specified condition to become false.
+        /// Returns task waiting for specified condition to become true.
         /// </summary>
         /// <param name="condition">Condition to check</param>
         /// <exception cref="ArgumentNullException">Thrown if condition is null</exception>
@@ -167,7 +167,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
 
         /// <summary>
-        /// Returns task waiting for specified condition to become false.
+        /// Returns task waiting for specified condition to become true.
         /// </summary>
         /// <param name="condition">Condition to check</param>
         /// <param name="token">Cancellation token</param>
