@@ -61,8 +61,8 @@ public async IPandaTask LoadPanda()
     // мы попадаем сюда после вызова метода GetStreamAsync внутри LoadWebPage
     
     // дожидаемся окончания загрузки
-await task;
-// здесь мы завершим IPandaTask, который вернули наружу
+    await task;
+    // здесь мы завершим IPandaTask, который вернули наружу
 }
 ```
 ## Советы по реализации async методов
@@ -171,8 +171,12 @@ await Task.Run( () => JObject.Parse( HeavyJson) );
 
 Для асинхронных тестов есть специальный атрибут AsyncTest. Чтобы создать асинхронный тест, нужно сделать следующее:
 
-Создать метод, возвращающий IPandaTask, IPandaTask<T>, Task или Task<T>
-Пометить его атрибутом AsyncTest. При необходимости задать таймаут в атрибуте. По умолчанию он равен 10 сек.
+1. Включить один из Compiler Define:
+    * CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_EDITOR - для EditMode тестов
+    * CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_PLAYMODE - для PlayMode тестов
+2. Создать метод, возвращающий IPandaTask, IPandaTask\<T\>, Task или Task\<T\>
+3. Пометить его атрибутом AsyncTest. При необходимости задать таймаут в атрибуте. По умолчанию он равен 10 сек.
+
 В остальном они ничем не отличаются от обычных.
 
 Примеры тестов:

@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#if (UNITY_EDITOR && CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_EDITOR) || CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_PLAYMODE
+
+using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using System;
@@ -148,3 +150,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
     }
 }
+
+#endif

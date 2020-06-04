@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#if (UNITY_EDITOR && CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_EDITOR) || CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_PLAYMODE
+
+using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
@@ -61,3 +63,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
     }
 }
+#else
+using System;
+
+namespace CrazyPanda.UnityCore.PandaTasks
+{
+    [ Obsolete( "You must enable appropriate define in order to use AsyncTestCaseSourceAttribute", true ) ]
+    public class AsyncTestCaseSourceAttribute : Attribute
+    {
+    }
+}
+#endif

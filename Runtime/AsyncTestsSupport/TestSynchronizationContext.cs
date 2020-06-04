@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if (UNITY_EDITOR && CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_EDITOR) || CRAZYPANDA_UNITYCORE_PROMISES_ENABLE_ASYNC_TESTS_PLAYMODE
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -62,3 +64,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
     }
 }
+
+#endif
