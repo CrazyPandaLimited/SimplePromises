@@ -11,7 +11,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             _endTime = DateTime.Now + delayTime;
 
-            cancellationToken.Register( TryCancel );
+            cancellationToken.Register( Cancel );
             Tick( this );
         }
 
