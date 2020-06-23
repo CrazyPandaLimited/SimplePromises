@@ -1,8 +1,12 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Assert = CrazyPanda.UnityCore.PandaTasks.Asserts.Assert;
+
+// we get this warning from these lines:
+//  async () => throw ...
+#pragma warning disable 1998
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
