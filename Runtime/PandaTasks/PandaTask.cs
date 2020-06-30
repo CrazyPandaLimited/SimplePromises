@@ -193,9 +193,12 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Helper method for creating Cancelled task
         /// </summary>
-        internal void Cancel()
+        internal void TryCancel()
         {
-            Reject( new TaskCanceledException() );
+            if( Status == PandaTaskStatus.Pending )
+            {
+                Reject( new TaskCanceledException() );
+            }
         }
         #endregion
 
