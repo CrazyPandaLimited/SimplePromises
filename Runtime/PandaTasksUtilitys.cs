@@ -19,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
             CompletedTask = completedTask;
 
             var canceledTask = new PandaTask();
-            canceledTask.Cancel();
+            canceledTask.TryCancel();
             CanceledTask = canceledTask;
         }
         #endregion
