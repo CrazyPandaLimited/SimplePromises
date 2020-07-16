@@ -268,14 +268,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// Return exception to stack. Must be in Unity thread!
         /// </summary>
         /// <param name="task">source task</param>
-        /// <param name="ignoreCancel">ignore TaskCanceledException</param>
+        /// <param name="ignoreCancel">ignore OperationCanceledException</param>
         public static void RethrowError( this IPandaTask task, bool ignoreCancel = false )
         {
             //throw
             task.Fail( x =>
             {
                 //not throw if no task canceled exception mode.
-                if( ignoreCancel && x is TaskCanceledException )
+                if( ignoreCancel && x is OperationCanceledException )
                 {
                     return;
                 }
