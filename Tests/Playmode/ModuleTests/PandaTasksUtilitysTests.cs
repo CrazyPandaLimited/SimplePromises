@@ -170,7 +170,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             tokenSource.Cancel();
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
         }
-
+        
         [ Test ]
         public void ThrowIfError_Should_Throw()
         {
@@ -323,10 +323,61 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( () => ResultTask( 5 ).OrTimeout( -1 ), Throws.ArgumentException );
         }
 
+        [ AsyncTest ]
+        public async IPandaTask RethrowError_Should_Have_CorrectException_AfterWaitAll()
+        {
+            await RethrowErrorTest( () => PandaTasksUtilitys.WaitAll( PandaTasksUtilitys.Delay( 1 ) ), () => throw new TestException() );
+
+            Assert.That( TestSynchronizationContext.HandleException(), Is.InstanceOf< TestException >() );
+        }
+
+        [ AsyncTest ]
+        public async IPandaTask RethrowError_Should_Have_CorrectException_AfterWaitAny()
+        {
+            await RethrowErrorTest( () => PandaTasksUtilitys.WaitAny( PandaTasksUtilitys.Delay( 1 ) ), () => throw new TestException() );
+
+            Assert.That( TestSynchronizationContext.HandleException(), Is.InstanceOf< TestException >() );
+        }
+
+        [ AsyncTest ]
+        public async IPandaTask RethrowError_Should_Have_CorrectException_AfterWaitWhile()
+        {
+            int i = 0;
+            await RethrowErrorTest( () => PandaTasksUtilitys.WaitWhile( () => ++i < 5 ), () => throw new TestException() );
+
+            Assert.That( TestSynchronizationContext.HandleException(), Is.InstanceOf< TestException >() );
+        }
+
+        [ AsyncTest ]
+        public async IPandaTask RethrowError_Should_Have_CorrectException_AfterDelay()
+        {
+            await RethrowErrorTest( () => PandaTasksUtilitys.Delay( 1 ), () => throw new TestException() );
+
+            Assert.That( TestSynchronizationContext.HandleException(), Is.InstanceOf< TestException >() );
+        }
+
         private async IPandaTask< int > ResultTask(int durationMilliseconds)
         {
             await PandaTasksUtilitys.Delay( durationMilliseconds );
             return 1;
+        }
+        
+        private async IPandaTask RethrowErrorTest( Func< IPandaTask > asyncPart, Action throwPart )
+        {
+            var t = Task();
+
+            t.RethrowError();
+            await PandaTasksUtilitys.WaitWhile( () => t.Status == PandaTaskStatus.Pending );
+
+            async IPandaTask Task()
+            {
+                await asyncPart();
+                throwPart();
+            }
+        }
+
+        private class TestException : Exception
+        {
         }
     }
 }

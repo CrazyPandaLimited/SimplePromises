@@ -21,19 +21,25 @@ namespace CrazyPanda.UnityCore.PandaTasks
             // UnitySynchronizationContext will process posted tasks each frame so this is equivalent to Update()
 
             var task = t as WaitWhilePandaTask;
-            try
+            if( task.Status == PandaTaskStatus.Pending )
             {
-                if( task.Status == PandaTaskStatus.Pending )
+                bool willWait = false;
+
+                try
                 {
-                    if( !task._condition() )
-                        task.Resolve();
-                    else
-                        SynchronizationContext.Current.Post( Tick, task );
+                    willWait = task._condition();
+                   
                 }
-            }
-            catch( Exception ex )
-            {
-                task.Reject( ex );
+                catch( Exception ex )
+                {
+                    task.Reject( ex );
+                    return;
+                }
+
+                if( !willWait )
+                    task.Resolve();
+                else
+                    SynchronizationContext.Current.Post( Tick, task );
             }
         }
     }

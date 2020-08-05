@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 
 namespace CrazyPanda.UnityCore.PandaTasks
@@ -11,10 +13,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
     /// It doesn't use thread pool and just queues all callbacks internally.
     /// Call <see cref="Tick"/> to dispatch all queued callbacks.
     /// </summary>
-    internal class TestSynchronizationContext : SynchronizationContext, IDisposable
+    public class TestSynchronizationContext : SynchronizationContext, IDisposable
     {
         private Queue< (SendOrPostCallback callback, object state) > _queue = new Queue< (SendOrPostCallback callback, object state) >();
         private SynchronizationContext _oldContext;
+        private List< ExceptionDispatchInfo > _recordedExceptions = new List< ExceptionDispatchInfo >();
 
         /// <summary>
         /// Event that will be called alongside Tick.
@@ -22,13 +25,31 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         public static event Action OnTick;
 
-        public TestSynchronizationContext()
+        internal TestSynchronizationContext()
         {
             _oldContext = Current;
-            SetSynchronizationContext(this);
+            SetSynchronizationContext( this );
         }
 
-        public void Tick()
+        /// <summary>
+        /// Returns first unhandled exception and removes it from list. If no unhandled exceptions left returns null
+        /// </summary>
+        public static Exception HandleException()
+        {
+            if( Current is TestSynchronizationContext self )
+            {
+                if( self._recordedExceptions.Count > 0 )
+                {
+                    var ret = self._recordedExceptions[ 0 ];
+                    self._recordedExceptions.RemoveAt( 0 );
+                    return ret.SourceException;
+                }
+            }
+
+            return null;
+        }
+
+        internal void Tick()
         {
             (SendOrPostCallback, object)[] callbacks = null;
             lock( _queue )
@@ -39,7 +60,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
             foreach( var (callback, state) in callbacks )
             {
-                callback( state );                
+                try
+                {
+                    callback( state );
+                }
+                catch( Exception e )
+                {
+                    _recordedExceptions.Add( ExceptionDispatchInfo.Capture( e ) );
+                }
             }
 
             OnTick?.Invoke();
@@ -49,17 +77,29 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             lock( _queue )
             {
-                _queue.Enqueue( (d, state) );
+                _queue.Enqueue( ( d, state ) );
             }
         }
 
         public void Dispose()
         {
-            if(_oldContext != null)
+            if( _oldContext != null )
             {
-                SetSynchronizationContext(_oldContext);
+                SetSynchronizationContext( _oldContext );
                 OnTick = null;
                 _oldContext = null;
+
+                var exceptions = _recordedExceptions;
+                _recordedExceptions = null;
+
+                if( exceptions.Count == 1 )
+                {
+                    exceptions[ 0 ].Throw();
+                }
+                else if( exceptions.Count > 1 )
+                {
+                    throw new AggregateException( exceptions.Select( e => e.SourceException ) );
+                }
             }
         }
     }
