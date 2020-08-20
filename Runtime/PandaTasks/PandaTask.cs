@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
-[ assembly: InternalsVisibleTo( @"Assembly-CSharp-Editor" ) ]
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     [ DebuggerNonUserCode ]

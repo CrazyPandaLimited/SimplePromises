@@ -1,0 +1,17 @@
+{
+    "name": "UnityCore.Promises.AsyncTestsSupport",
+    "references": [
+        "UnityCore.Promises"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
