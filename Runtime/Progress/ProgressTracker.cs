@@ -9,7 +9,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		#endregion
 
 		#region Public Events
-		public event EventHandler< ProgressChangedEventArgs< T > > OnProgressChanged = delegate { };
+		public event Action< T > OnProgressChanged;
 		#endregion
 
 		#region Constructor
@@ -22,7 +22,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 			//add handler if exist
 			if( handler != null )
 			{
-				OnProgressChanged += ( sender, args ) => handler( args.progress );
+				OnProgressChanged += ( progress ) => handler( progress );
 			}
 
 			//set start progress
@@ -39,7 +39,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 				if( !Equals( value, _progress ) )
 				{
 					_progress = value;
-					OnProgressChanged( this, new ProgressChangedEventArgs< T >( _progress ) );
+					OnProgressChanged?.Invoke( _progress );
 				}
 			}
 		}

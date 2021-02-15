@@ -9,7 +9,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		/// <summary>
 		/// Rise after progress changed
 		/// </summary>
-		event EventHandler< ProgressChangedEventArgs< T > > OnProgressChanged;
+		event Action< T > OnProgressChanged;
 		#endregion
 
 		#region Public Members

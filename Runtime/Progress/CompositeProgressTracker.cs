@@ -35,14 +35,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		#endregion
 
 		#region Public Events
-		public event EventHandler< ProgressChangedEventArgs< float > > OnProgressChanged = delegate { };
+		public event Action< float > OnProgressChanged;
 		#endregion
 
 		#region Private Members
 		/// <summary>
 		/// Handler for progress updated
 		/// </summary>
-		private void HandleProgressChanged( object sender, ProgressChangedEventArgs< float > e )
+		private void HandleProgressChanged( float e )
 		{
 			UpdateProgress();
 		}
@@ -66,7 +66,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 			if( !Mathf.Approximately( Progress, totalProgress ) )
 			{
 				Progress = totalProgress;
-				OnProgressChanged( this, new ProgressChangedEventArgs< float >( Progress ) );
+				OnProgressChanged?.Invoke( Progress );
 			}
 		}
 		#endregion
