@@ -13,12 +13,24 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		#endregion
 
 		#region Constructor
-		public ProgressTracker( Action< T > handler = null ) : this( default, handler )
-		{
-		}
+        public ProgressTracker() : this( default( T ) )
+        {
+            
+        }
 
-		public ProgressTracker( T startValue, Action< T > handler = null )
-		{
+        public ProgressTracker( T startValue )
+        {
+            //set start progress
+            Progress = startValue;
+        }
+
+        public ProgressTracker( Action< T > handler ) : this( default, handler )
+        {
+            
+        }
+        
+        public ProgressTracker( T startValue, Action< T > handler )
+        {
 			//add handler if exist
 			if( handler != null )
 			{
