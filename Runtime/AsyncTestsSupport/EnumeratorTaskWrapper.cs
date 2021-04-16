@@ -79,7 +79,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
                     sw.Stop();
 
-                    if( waitTask.IsFaulted )
+                    if ( waitTask.IsCanceled )
+                    {
+                        context.CurrentResult.SetResult( ResultState.Failure, $"Task was failed due to task cancellation!" );
+                    }
+                    else if ( waitTask.IsFaulted )
                     {
                         // throw it the way that Unity's "Open error line" will direct to correct line and not here
                         ExceptionDispatchInfo.Capture( waitTask.Exception.InnerException ).Throw();
