@@ -14,6 +14,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		#endregion
 
 		#region Constructors
+        public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection, Action< float > onProgressChanged ) : this( trackersCollection )
+        {
+            OnProgressChanged += onProgressChanged;
+        }
+        
 		public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection )
 		{
 			//add events
