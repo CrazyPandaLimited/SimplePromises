@@ -24,6 +24,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
             Progress = startValue;
         }
 
+        public ProgressTracker( T startValue, Action< T > handler ) : this( startValue )
+        {
+            //add handler if exist
+            if( handler != null )
+            {
+                OnProgressChanged += ( progress ) => handler( progress );
+            }
+
+            //set start progress
+        }
+        
 		#endregion
 
 		#region Public Fields
