@@ -65,7 +65,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 			}
 
 			//get normalized progress
-			totalProgress = _count > 0 ? Mathf.Clamp01( totalProgress / _count ) : float.NaN;
+			totalProgress = _count > 0 ? Mathf.Clamp01( totalProgress / _count ) : 1f;
 
 			//set progress if changed
 			if( !Mathf.Approximately( Progress, totalProgress ) )
