@@ -29,7 +29,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
             //add handler if exist
             if( handler != null )
             {
-                OnProgressChanged += ( progress ) => handler( progress );
+                OnProgressChanged = ( progress ) => handler( progress );
             }
 
             //set start progress
