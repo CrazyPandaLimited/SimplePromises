@@ -6,10 +6,30 @@ using System.Threading;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
+    [ TestFixture( typeof( float ) ) ]
+    [ TestFixture( typeof( object ) ) ]
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
+    public sealed class PandaTasksUtilitysTests <T>
+    {
+        [Test]
+        public void GetCanceledTask_Should_Return_Same_Instance() => 
+            Assert.That( PandaTasksUtilitys.GetCanceledTask<T>(), Is.EqualTo( PandaTasksUtilitys.GetCanceledTask< T >() ) );
+    }
+
+    [ TestFixture( typeof( TestClass ), typeof( InheritedTestClass ) ) ]
+    [ TestFixture( typeof( object ), typeof( float ) ) ]
+    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
+    public sealed class PandaTasksUtilitysTests <T1,T2>
+    {
+        [ Test ]
+        public void GetCanceledTask_Should_Return_Different_Instance() => 
+            Assert.That( PandaTasksUtilitys.GetCanceledTask< T1 >(), Is.Not.EqualTo( PandaTasksUtilitys.GetCanceledTask< T2 >() ) );
+    }
+
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitysTests
 	{
-		[ Test ]
+        [ Test ]
 		public void NullSequenceTest()
 		{
 			//act-assert
@@ -380,4 +400,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         {
         }
     }
+    
+    internal class TestClass { }
+
+    internal class InheritedTestClass : TestClass { }
 }

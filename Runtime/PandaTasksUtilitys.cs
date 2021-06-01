@@ -60,9 +60,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         public static IPandaTask< T > GetCanceledTask< T >()
         {
-            var resultTask = new PandaTask< T >();
-            resultTask.Reject( new TaskCanceledException() );
-            return resultTask;
+            return CancelledPandaTaskProvider< T >.Value;
         }
 
 		/// <summary>
@@ -365,5 +363,16 @@ namespace CrazyPanda.UnityCore.PandaTasks
             } );
         }
         #endregion
+
+        private static class CancelledPandaTaskProvider< T >
+        {
+            public static readonly PandaTask< T > Value;
+
+            static CancelledPandaTaskProvider()
+            {
+                Value = new PandaTask< T >();
+                Value.Reject( new TaskCanceledException() );
+            }
+        }
     }
 }
