@@ -2,8 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using UnityEngine;
-
 //using StandardAssets.Editor;
 
 
@@ -379,68 +377,5 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 			_task.Resolve();
 			Assert.False( _task.keepWaiting );
 		}
-
-        [ Test ]
-        public void Then_Should_Throw_Exception_After_Tasks_Resolve()
-        {
-            var firstTask = new PandaTask();
-            var secondTask = new PandaTask();
-
-            var continiueTask = firstTask.Then( () => secondTask ).Done( () => throw new ArgumentNullException() );
-            
-            Assert.Throws< ArgumentNullException >( () =>
-            {
-                secondTask.Resolve();
-                firstTask.Resolve();
-            } );
-
-            Assert.IsNull( continiueTask.Error );
-        }
-
-        [ Test ]
-        public void Then_Should_Throw_Exception_After_Tasks_Fail()
-        {
-            var exceptionToThrow = new ArgumentNullException();
-            var firstTask = new PandaTask();
-            var secondTask = new PandaTask();
-
-            var continiueTask = firstTask.Then( () => secondTask ).Fail( _ => throw exceptionToThrow );
-
-            Assert.IsNull( continiueTask.Error );
-            
-            Exception finalException = null;
-
-            try
-            {
-                secondTask.Reject();
-                firstTask.Reject();
-            }
-            catch( Exception e ) when( e is ArgumentNullException nullException )
-            {
-                finalException = nullException;
-            }
-            
-            Assert.That( exceptionToThrow, Is.EqualTo( finalException ) );
-            Assert.IsAssignableFrom< TaskRejectedException >( continiueTask.Error );
-        }
-
-        [ Test ]
-        public void Then_Should_Save_Exception_In_Stack_After_Tasks_Fail()
-        {
-            var rejectException = new Exception( "some text" );
-            var firstTask = new PandaTask();
-            var secondTask = new PandaTask();
-
-            var continiueTask = firstTask.Then( () => secondTask ).Fail( _ => throw new ArgumentNullException() );
-
-            try
-            {
-                secondTask.Reject( rejectException );
-                firstTask.Reject(rejectException);
-            }
-            catch{}
-            
-            Assert.That( continiueTask.Error, Is.EqualTo( rejectException ) );
-        }
-    }
+	}
 }

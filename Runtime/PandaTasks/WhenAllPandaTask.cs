@@ -110,14 +110,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
                     case null:
                         base.Resolve();
                         break;
-                    case Exception error:
-                        bool aggregate = CanAggregate() && error is TaskCanceledException;
-                        var rejectError = aggregate ? new TaskCanceledException() : (Exception)new AggregateException( error );
+                    case Exception error:                        
+                        bool canUseTaskCanceledException = CanUseTaskCanceledException() && error is OperationCanceledException;
+                        var rejectError = canUseTaskCanceledException ? new TaskCanceledException() : (Exception)new AggregateException( error );
                         Reject( rejectError );
                         break;
                     case List< Exception > errorsList:
-                        aggregate = CanAggregate() && errorsList.All( x => x is TaskCanceledException );
-                        rejectError = aggregate ? new TaskCanceledException() : (Exception)new AggregateException( errorsList );
+                        canUseTaskCanceledException = CanUseTaskCanceledException() && errorsList.All( x => x is OperationCanceledException );
+                        rejectError = canUseTaskCanceledException ? new TaskCanceledException() : (Exception)new AggregateException( errorsList );
                         Reject( rejectError );
                         break;
                 }
@@ -125,7 +125,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
 
         [ MethodImpl( MethodImplOptions.AggressiveInlining ) ]
-        private bool CanAggregate()
+        private bool CanUseTaskCanceledException()
         {
             return _strategy == CancellationStrategy.PartCancel || _strategy == CancellationStrategy.FullCancel && _allFailed;
         }

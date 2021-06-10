@@ -121,11 +121,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			}
 			catch( Exception ex )
 			{
-                if( Status != PandaTaskStatus.Pending )
-                {
-                    throw;
-                }
-                
 				//reject on non system exceptions
 				RejectInternal( ex );
 			}
