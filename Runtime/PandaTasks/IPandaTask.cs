@@ -11,7 +11,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 #pragma warning restore CS0436 // Type conflicts with imported type
 	public interface IPandaTask : IDisposable
 	{
-		#region Public Properties
 		/// <summary>
 		/// Current status of task
 		/// </summary>
@@ -21,9 +20,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		/// Current error of task
 		/// </summary>
         Exception Error { get; }
-		#endregion
 
-		#region Public Members
 		/// <summary>
 		/// Add complete task handler
 		/// </summary>
@@ -78,6 +75,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// Throws error if task is rejected. Error is same as task Error field.
         /// </summary>
         void ThrowIfError();
-        #endregion
     }
 }

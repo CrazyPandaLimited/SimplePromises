@@ -8,14 +8,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
 #pragma warning restore CS0436 // Type conflicts with imported type
 	public interface IPandaTask< TResult > : IPandaTask
 	{
-		#region Public Properties
 		/// <summary>
 		/// Result of task (throw exception if result unavailable)
 		/// </summary>
 		TResult Result { get; }
-		#endregion
 
-		#region Public Members
 		/// <summary>
 		/// Add complete with error task handler
 		/// </summary>
@@ -71,6 +68,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		/// <param name="onCatch">error callback</param>
 		/// <returns>new Task</returns>
 		IPandaTask< TResult > CatchResult( Action< Exception > onCatch );
-		#endregion
 	}
 }

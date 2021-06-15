@@ -10,11 +10,8 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
 	internal class PandaTask< TResult > : PandaTask, IPandaTask< TResult >
 	{
-		#region Private Fields
 		private TResult _result;
-		#endregion
 
-		#region MyRegion
 		public TResult Result
 		{
 			get
@@ -35,9 +32,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 				}
 			}
 		}
-		#endregion
 
-		#region Public Fields
 		public IPandaTask< TResult > FailResult( Action< Exception > errorhandler )
 		{
 			Fail( errorhandler );
@@ -87,9 +82,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		{
 			return new ContinuationTaskFromPandaTask< TNewResult >( this, () => onResolved( Result ) );
 		}
-		#endregion
 
-		#region Internal Fields
 		/// <summary>
 		/// Set value for task
 		/// </summary>
@@ -105,6 +98,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			//resolve sets default value no exception
 			SetValue( default );
 		}
-		#endregion
 	}
 }

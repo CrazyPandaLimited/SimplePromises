@@ -10,19 +10,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
 	internal class PandaTask : CustomYieldInstruction, IPandaTask
 	{
-		#region Private Fields
 		private Action _doneAction;
 		private Action< Exception > _failAction;
         private ExceptionDispatchInfo _errorInfo;
-		#endregion
 
-		#region Public Properties
         public Exception Error => _errorInfo?.SourceException;
 		public PandaTaskStatus Status { get; set; }
 		public override bool keepWaiting => Status == PandaTaskStatus.Pending;
-		#endregion
 
-		#region Public Members
 		public IPandaTask Done( Action completeHandler )
 		{
 			//check arguments
@@ -139,9 +134,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 _errorInfo.Throw();
             }
         }
-		#endregion
 
-		#region Internal Members
 		/// <summary>
 		/// Complete current task
 		/// </summary>
@@ -199,9 +192,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 Reject( new TaskCanceledException() );
             }
         }
-        #endregion
 
-		#region Protected Members
 		/// <summary>
         ///Validate status of task
         /// </summary>
@@ -214,6 +205,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 throw new InvalidOperationException( $@"Expect Task state: {expectedStatus} but was: {Status}" );
             }
         }
-        #endregion
 	}
 }

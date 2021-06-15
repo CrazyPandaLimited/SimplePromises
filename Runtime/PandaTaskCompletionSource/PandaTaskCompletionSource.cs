@@ -6,18 +6,13 @@ namespace CrazyPanda.UnityCore.PandaTasks
 {
 	public class PandaTaskCompletionSource
 	{
-		#region Private Fields
 		private readonly PandaTask _controledTask = new PandaTask();
-		#endregion
 
-		#region Public Properties
 		/// <summary>
 		/// Task associated with CompletionSource
 		/// </summary>
 		public IPandaTask Task => _controledTask;
-		#endregion
 
-		#region Public Fields
 		/// <summary>
 		/// Complete task with error
 		/// </summary>
@@ -56,6 +51,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		{
 			_controledTask.Reject( new TaskCanceledException() );
 		}
-		#endregion
 	}
 }

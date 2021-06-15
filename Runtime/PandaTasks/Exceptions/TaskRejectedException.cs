@@ -8,7 +8,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 	/// </summary>
 	public sealed class TaskRejectedException : OperationCanceledException
 	{
-		#region Constructors
 		public TaskRejectedException( string message ) : base( message )
 		{
 		}
@@ -16,6 +15,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		public TaskRejectedException( string message, Exception innerException ) : base( message, innerException )
 		{
 		}
-		#endregion
 	}
 }

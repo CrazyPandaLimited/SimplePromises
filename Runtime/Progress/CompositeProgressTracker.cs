@@ -8,12 +8,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 {
 	public sealed class CompositeProgressTracker : IProgressSource< float >
 	{
-		#region Private Fields
 		private readonly IEnumerable< IProgressSource< float > > _trackersCollection;
 		private readonly int _count;
-		#endregion
 
-		#region Constructors
         public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection, Action< float > onProgressChanged ) : this( trackersCollection )
         {
             OnProgressChanged = onProgressChanged;
@@ -33,17 +30,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 			//start update progress
 			UpdateProgress();
 		}
-		#endregion
 
-		#region Public Properties
 		public float Progress { get; private set; }
-		#endregion
 
-		#region Public Events
 		public event Action< float > OnProgressChanged;
-		#endregion
 
-		#region Private Members
 		/// <summary>
 		/// Handler for progress updated
 		/// </summary>
@@ -74,6 +65,5 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 				OnProgressChanged?.Invoke( Progress );
 			}
 		}
-		#endregion
 	}
 }

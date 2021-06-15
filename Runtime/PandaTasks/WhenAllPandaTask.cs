@@ -12,15 +12,12 @@ namespace CrazyPanda.UnityCore.PandaTasks
     /// </summary>
     internal sealed class WhenAllPandaTask : PandaTask
     {
-        #region Private Fields
         private object _error;
         private bool _allFailed;
         private int _waitingCount;
 
         private readonly CancellationStrategy _strategy;
-        #endregion
 
-        #region Constructors
         internal WhenAllPandaTask( IEnumerable< IPandaTask > tasksCollection, CancellationStrategy strategy )
         {
             //check-set
@@ -57,9 +54,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
             CheckCompletion();
         }
-        #endregion
 
-        #region Private Members
         internal override void Resolve()
         {
             throw new InvalidOperationException( @"ThenAllPandaTask cannot be resolved" );
@@ -129,6 +124,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             return _strategy == CancellationStrategy.PartCancel || _strategy == CancellationStrategy.FullCancel && _allFailed;
         }
-        #endregion
     }
 }

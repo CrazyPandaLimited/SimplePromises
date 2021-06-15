@@ -4,15 +4,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 {
 	public sealed class ProgressTracker< T > : IProgressTracker< T > where T : struct
 	{
-		#region Private Fields
 		private T _progress;
-		#endregion
 
-		#region Public Events
 		public event Action< T > OnProgressChanged;
-		#endregion
 
-		#region Constructor
         public ProgressTracker()
         {
             
@@ -35,9 +30,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
             //set start progress
         }
         
-		#endregion
 
-		#region Public Fields
 		public T Progress
 		{
 			get => _progress;
@@ -50,13 +43,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 				}
 			}
 		}
-		#endregion
 
-		#region MyRegion
 		public void ReportProgress( T value )
 		{
 			Progress = value;
 		}
-		#endregion
 	}
 }

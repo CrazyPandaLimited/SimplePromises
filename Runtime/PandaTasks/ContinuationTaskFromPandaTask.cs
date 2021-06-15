@@ -7,16 +7,11 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
 	internal sealed class ContinuationTaskFromPandaTask : PandaTask
 	{
-		#region Public Fields
 		internal readonly bool FromCatch;
-		#endregion
 
-		#region Private Fields
 		private readonly Func< IPandaTask > _nextActionDelegate;
 		private ContinuationTaskState _state = ContinuationTaskState.WaitFirstComplete;
-		#endregion
 
-		#region Constructor
 		internal ContinuationTaskFromPandaTask( IPandaTask currentPandaTask, Func< IPandaTask > nextAction, bool fromCatch = false )
 		{
             //check - set
@@ -38,18 +33,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
                    case PandaTaskStatus.Resolved: HandleTaskCompleted(); break;
             }
 		}
-		#endregion
 
-		#region Public Fields
 		public override void Dispose()
 		{
 			//to prevent supported state after dispose
 			_state = ContinuationTaskState.Completed;
 			base.Dispose();
 		}
-		#endregion
 
-		#region Internal
 		/// <summary>
 		/// Resolve for continuation task unavailable
 		/// </summary>
@@ -57,9 +48,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		{
 			throw new InvalidOperationException( @"Impossible to resolve continuation task" );
 		}
-		#endregion
 		
-		#region Private Members
 		/// <summary>
 		/// Handler for task fail
 		/// </summary>
@@ -161,6 +150,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 				throw new InvalidOperationException( $@"Cannot perform operation in {Status} status" );
 			}
 		}
-		#endregion
 	}
 }

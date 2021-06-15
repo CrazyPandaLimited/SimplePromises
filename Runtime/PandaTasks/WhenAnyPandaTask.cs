@@ -11,7 +11,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
     internal sealed class WhenAnyPandaTask : PandaTask< IPandaTask >
     {
-        #region Constructors
         internal WhenAnyPandaTask( IEnumerable< IPandaTask > tasks )
         {
             //check
@@ -43,9 +42,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 }
             }
         }
-        #endregion
 
-        #region Internal Members
         internal override void Resolve()
         {
             throw new InvalidOperationException( $@"Impossible to resolve {nameof(WhenAnyPandaTask)}" );
@@ -60,9 +57,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             throw new InvalidOperationException( $@"Impossible to set value for {nameof(WhenAnyPandaTask)}" );
         }
-        #endregion
 
-        #region Private Member
         /// <summary>
         /// Handler for one of task failed
         /// </summary>
@@ -86,6 +81,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 base.SetValue( task );
             }
         }
-        #endregion
     }
 }

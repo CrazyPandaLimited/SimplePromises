@@ -6,12 +6,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
     internal sealed class ContinuationTaskFromPandaTask< TResult > : PandaTask< TResult >
     {
-        #region Private Fields
         private readonly IPandaTask _combinedTask;
         private IPandaTask< TResult > _continuationTask;
-        #endregion
 
-        #region Constructor
         internal ContinuationTaskFromPandaTask( IPandaTask currentTask, Func< IPandaTask< TResult > > continuationTaskCallback, bool fromReject = false )
         {
             //construct non generic continuation task
@@ -29,17 +26,13 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 base.SetValue( result );
             } );
         }
-        #endregion
 
-        #region Public Members
         public override void Dispose()
         {
             //dispose call _resultlessTask.Fail
             _combinedTask.Dispose();
         }
-        #endregion
 
-        #region Internal Members
         /// <summary>
         /// Resolve for continuation task unavailable
         /// </summary>
@@ -55,9 +48,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         {
             throw new InvalidOperationException( @"Impossible to set value for continuation task" );
         }
-        #endregion
 
-        #region Private Members
         private IPandaTask ConstrcutCombinedTask( IPandaTask currentTask, Func< IPandaTask< TResult > > continuationTaskCallback, bool fromReject )
         {
             //check arguments
@@ -73,6 +64,5 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
             return new ContinuationTaskFromPandaTask( currentTask, () => _continuationTask = continuationTaskCallback(), fromReject );
         }
-        #endregion
     }
 }

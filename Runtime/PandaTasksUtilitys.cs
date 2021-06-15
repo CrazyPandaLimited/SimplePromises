@@ -10,7 +10,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [ DebuggerNonUserCode ]
 	public static class PandaTasksUtilitys
 	{
-        #region Constructor
         static PandaTasksUtilitys()
         {
             //create resolved and canceled tasks. Both tasks will be created before first class access.
@@ -22,9 +21,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
             canceledTask.TryCancel();
             CanceledTask = canceledTask;
         }
-        #endregion
 
-		#region Public Members
         /// <summary>
         /// Completed Task
         /// </summary>
@@ -362,7 +359,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 return task;
             } );
         }
-        #endregion
 
         private static class CancelledPandaTaskProvider< T >
         {
