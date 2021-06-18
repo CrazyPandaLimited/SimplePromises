@@ -19,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
     [ TestFixture( typeof( TestClass ), typeof( InheritedTestClass ) ) ]
     [ TestFixture( typeof( object ), typeof( float ) ) ]
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
-    public sealed class PandaTasksUtilitysTests <T1,T2>
+    public sealed class PandaTasksUtilitiesTests <T1,T2>
     {
         [ Test ]
         public void GetCanceledTask_Should_Return_Different_Instance() => 
@@ -27,7 +27,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
     }
 
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
-    public sealed class PandaTasksUtilitysTests
+    public sealed class PandaTasksUtilitiesTests
 	{
         [ Test ]
 		public void NullSequenceTest()
