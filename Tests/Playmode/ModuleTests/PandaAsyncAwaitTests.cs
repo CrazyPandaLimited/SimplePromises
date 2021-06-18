@@ -10,7 +10,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ReturnsFromAwait()
         {
             // arrange
-            async IPandaTask func() => await PandaTasksUtilitys.CompletedTask;
+            async IPandaTask func() => await PandaTasksUtilities.CompletedTask;
 
             // act
             await func();
@@ -20,7 +20,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public async IPandaTask ReturnsValueFromAwait()
         {
             // arrange
-            async IPandaTask< int > func() => await PandaTasksUtilitys.GetCompletedTask( 1 );
+            async IPandaTask< int > func() => await PandaTasksUtilities.GetCompletedTask( 1 );
 
             // act
             var value = await func();
@@ -34,7 +34,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         {
             // arrange
             var excpectException = new Exception();
-            async IPandaTask func() => await PandaTasksUtilitys.GetTaskWithError( excpectException );
+            async IPandaTask func() => await PandaTasksUtilities.GetTaskWithError( excpectException );
 
             //act
             Exception realException = null;
@@ -56,7 +56,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         {
             // arrange
             var excpectException = new Exception();
-            async IPandaTask< int > func() => await PandaTasksUtilitys.GetTaskWithError< int >( excpectException );
+            async IPandaTask< int > func() => await PandaTasksUtilities.GetTaskWithError< int >( excpectException );
 
             //act
             Exception realException = null;
@@ -168,7 +168,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
         private IPandaTask NonSynchronousTask()
         {
-            return PandaTasksUtilitys.Delay(TimeSpan.FromMilliseconds(100));
+            return PandaTasksUtilities.Delay(TimeSpan.FromMilliseconds(100));
         }
     }
 }

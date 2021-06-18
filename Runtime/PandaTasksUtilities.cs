@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     [ DebuggerNonUserCode ]
-	public static class PandaTasksUtilitys
+	public static class PandaTasksUtilities
 	{
-        static PandaTasksUtilitys()
+        static PandaTasksUtilities()
         {
             //create resolved and canceled tasks. Both tasks will be created before first class access.
             var completedTask = new PandaTask();

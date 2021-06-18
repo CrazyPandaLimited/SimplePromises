@@ -22,21 +22,21 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                  yield return new TestCaseData( new[] { GetOperationCanceledTask(), GetChildOperationCanceledTask() }, CancellationStrategy.FullCancel, typeof( TaskCanceledException ) );
                  yield return new TestCaseData( new[] { GetOperationCanceledTask(), GetChildOperationCanceledTask() }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) );
                  
-                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilitys.CanceledTask }, CancellationStrategy.FullCancel, typeof( TaskCanceledException ) ).SetName( "FullOperationCancelTest" );
+                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilities.CanceledTask }, CancellationStrategy.FullCancel, typeof( TaskCanceledException ) ).SetName( "FullOperationCancelTest" );
                  yield return new TestCaseData( new[] { GetOperationCanceledTask(), GetOperationCanceledTask() }, CancellationStrategy.FullCancel, typeof( TaskCanceledException ) ).SetName( "FullOperationOnlyCancelTest" );
                  yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), GetChildOperationCanceledTask() }, CancellationStrategy.FullCancel, typeof( TaskCanceledException ) ).SetName( "FullChildOperationOnlyCancelTest" );
-                 yield return new TestCaseData( new[] { PandaTasksUtilitys.CanceledTask, PandaTasksUtilitys.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilitys.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullOperationCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), PandaTasksUtilitys.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullChildOperationCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { PandaTasksUtilitys.CanceledTask, PandaTasksUtilitys.GetTaskWithError( new Exception() ) }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullCancelWrongTypeTest" );
-                 yield return new TestCaseData( new []{PandaTasksUtilitys.CanceledTask, PandaTasksUtilitys.CanceledTask}, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfCancelTest" );
-                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilitys.CanceledTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOperationCancelTest" );
+                 yield return new TestCaseData( new[] { PandaTasksUtilities.CanceledTask, PandaTasksUtilities.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilities.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullOperationCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), PandaTasksUtilities.CompletedTask }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullChildOperationCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { PandaTasksUtilities.CanceledTask, PandaTasksUtilities.GetTaskWithError( new Exception() ) }, CancellationStrategy.FullCancel, typeof( AggregateException ) ).SetName( "FullCancelWrongTypeTest" );
+                 yield return new TestCaseData( new []{PandaTasksUtilities.CanceledTask, PandaTasksUtilities.CanceledTask}, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfCancelTest" );
+                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilities.CanceledTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOperationCancelTest" );
                  yield return new TestCaseData( new[] { GetOperationCanceledTask(), GetOperationCanceledTask() }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOnlyOperationCancelTest" );
                  yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), GetChildOperationCanceledTask() }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOnlyChildOperationCancelTest" );
-                 yield return new TestCaseData( new []{PandaTasksUtilitys.CanceledTask, PandaTasksUtilitys.CompletedTask}, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilitys.CompletedTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOperationCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), PandaTasksUtilitys.CompletedTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfChildOperationCancelSomeSuccessTest" );
-                 yield return new TestCaseData( new[] { PandaTasksUtilitys.CanceledTask, PandaTasksUtilitys.GetTaskWithError( new Exception() ) }, CancellationStrategy.PartCancel, typeof( AggregateException ) ).SetName( "HalfCancelWrongTypeTest" );
+                 yield return new TestCaseData( new []{PandaTasksUtilities.CanceledTask, PandaTasksUtilities.CompletedTask}, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { GetOperationCanceledTask(), PandaTasksUtilities.CompletedTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfOperationCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { GetChildOperationCanceledTask(), PandaTasksUtilities.CompletedTask }, CancellationStrategy.PartCancel, typeof( TaskCanceledException ) ).SetName( "HalfChildOperationCancelSomeSuccessTest" );
+                 yield return new TestCaseData( new[] { PandaTasksUtilities.CanceledTask, PandaTasksUtilities.GetTaskWithError( new Exception() ) }, CancellationStrategy.PartCancel, typeof( AggregateException ) ).SetName( "HalfCancelWrongTypeTest" );
              }
         }
 
@@ -233,7 +233,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var tasksCollection = new List< IPandaTask >( count );
             for( int i = 0; i < count; i++ )
             {
-                tasksCollection.Add( PandaTasksUtilitys.CompletedTask );
+                tasksCollection.Add( PandaTasksUtilities.CompletedTask );
             }
 
             //act
@@ -268,7 +268,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var source = new PandaTaskCompletionSource();
             var tasks = new List< IPandaTask >
             {
-                PandaTasksUtilitys.CompletedTask,
+                PandaTasksUtilities.CompletedTask,
                 source.Task
             };
 
@@ -289,12 +289,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var source = new PandaTaskCompletionSource();
             var tasks = new List< IPandaTask >
             {
-                PandaTasksUtilitys.CompletedTask,
+                PandaTasksUtilities.CompletedTask,
                 source.Task
             };
 
             var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
-            tasks.Add( PandaTasksUtilitys.CanceledTask );
+            tasks.Add( PandaTasksUtilities.CanceledTask );
 
             //act
             source.Resolve();
@@ -310,12 +310,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             var source = new PandaTaskCompletionSource();
             var tasks = new List< IPandaTask >
             {
-                PandaTasksUtilitys.CompletedTask,
+                PandaTasksUtilities.CompletedTask,
                 source.Task
             };
 
             var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
-            tasks.Add( PandaTasksUtilitys.CanceledTask );
+            tasks.Add( PandaTasksUtilities.CanceledTask );
 
             //act
             var testError = new Exception();
@@ -327,9 +327,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             CollectionAssert.AreEqual( new[] { testError }, (( AggregateException )allTask.Error).InnerExceptions );
         }
 
-        private static IPandaTask GetOperationCanceledTask() => PandaTasksUtilitys.GetTaskWithError( new OperationCanceledException() );
+        private static IPandaTask GetOperationCanceledTask() => PandaTasksUtilities.GetTaskWithError( new OperationCanceledException() );
 
-        private static IPandaTask GetChildOperationCanceledTask() => PandaTasksUtilitys.GetTaskWithError( new RandomChildOfOperationCanceledException() );
+        private static IPandaTask GetChildOperationCanceledTask() => PandaTasksUtilities.GetTaskWithError( new RandomChildOfOperationCanceledException() );
 
         private class RandomChildOfOperationCanceledException : OperationCanceledException { }
     }
