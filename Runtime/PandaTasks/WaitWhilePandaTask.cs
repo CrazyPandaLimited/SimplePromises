@@ -6,6 +6,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
     class WaitWhilePandaTask : PandaTask
     {
         private readonly Func< bool > _condition;
+        private static readonly SendOrPostCallback _tickCallback = new SendOrPostCallback(Tick);
 
         public WaitWhilePandaTask( Func< bool > condition, CancellationToken cancellationToken )
         {
@@ -43,7 +44,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 if( !willWait )
                     task.Resolve();
                 else
-                    SynchronizationContext.Current.Post( Tick, task );
+                    SynchronizationContext.Current.Post( _tickCallback, task );
             }
         }
     }

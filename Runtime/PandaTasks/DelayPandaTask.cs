@@ -7,6 +7,8 @@ namespace CrazyPanda.UnityCore.PandaTasks
     {
         private readonly DateTime _endTime;
 
+        private static readonly SendOrPostCallback _tickCallback = new SendOrPostCallback( Tick );
+
         public DelayPandaTask( TimeSpan delayTime, CancellationToken cancellationToken )
         {
             _endTime = DateTime.Now + delayTime;
@@ -15,7 +17,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
             {
                 cancellationToken.Register( TryCancel );
             }
-
+            
             Tick( this );
         }
 
@@ -31,7 +33,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
                 if( DateTime.Now >= delayTask._endTime )
                     delayTask.Resolve();
                 else
-                    SynchronizationContext.Current.Post( Tick, t );
+                    SynchronizationContext.Current.Post( _tickCallback, t );
             }
         }
     }
