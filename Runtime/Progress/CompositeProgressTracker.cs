@@ -8,33 +8,39 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 {
 	public sealed class CompositeProgressTracker : IProgressSource< float >
 	{
-		private readonly IEnumerable< IProgressSource< float > > _trackersCollection;
-		private readonly int _count;
+		private IEnumerable< IProgressSource< float > > _trackersCollection;
+		private int _count;
 
-        public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection, Action< float > onProgressChanged ) : this( trackersCollection )
+        public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection, Action< float > onProgressChanged )
         {
             OnProgressChanged = onProgressChanged;
+            Initialize( trackersCollection );
         }
         
 		public CompositeProgressTracker( IEnumerable< IProgressSource< float > > trackersCollection )
 		{
-			//add events
-			_trackersCollection = trackersCollection ?? throw new ArgumentNullException( nameof(trackersCollection) );
-
-			foreach( IProgressSource< float > tracker in _trackersCollection )
-			{
-				_count++;
-				tracker.OnProgressChanged += HandleProgressChanged;
-			}
-
-			//start update progress
-			UpdateProgress();
+            Initialize( trackersCollection );
 		}
 
 		public float Progress { get; private set; }
 
 		public event Action< float > OnProgressChanged;
 
+        private void Initialize( IEnumerable< IProgressSource< float > > trackersCollection )
+        {
+            //add events
+            _trackersCollection = trackersCollection ?? throw new ArgumentNullException( nameof(trackersCollection) );
+
+            foreach( IProgressSource< float > tracker in _trackersCollection )
+            {
+                _count++;
+                tracker.OnProgressChanged += HandleProgressChanged;
+            }
+
+            //start update progress
+            UpdateProgress();
+        }
+        
 		/// <summary>
 		/// Handler for progress updated
 		/// </summary>
@@ -42,7 +48,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 		{
 			UpdateProgress();
 		}
-
+        
 		/// <summary>
 		/// Update progress 
 		/// </summary>
