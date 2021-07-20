@@ -3,7 +3,8 @@
     "references": [
         "UnityCore.Promises",
         "UnityCore.Promises.AsyncTestsSupport",
-        "UnityCore.UtilsCollectionSystem"
+        "UnityCore.UtilsCollectionSystem",
+        "UnityCore.Promises.AsyncOperationAwaitSupport"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
