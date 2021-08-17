@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Progress
 {
@@ -36,7 +37,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Progress
 			get => _progress;
 			private set
 			{
-				if( !Equals( value, _progress ) )
+				if( !EqualityComparer< T >.Default.Equals( value, _progress ) )
 				{
 					_progress = value;
 					OnProgressChanged?.Invoke( _progress );
