@@ -265,7 +265,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteTest()
         {
             //arrange
-            var source = new PandaTaskCompletionSource();
+            var source = UnsafeCompletionSource.Create();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,
@@ -286,7 +286,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteErrorTest()
         {
             //arrange
-            var source = new PandaTaskCompletionSource();
+            var source = UnsafeCompletionSource.Create();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,
@@ -307,7 +307,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteWithErrorTest()
         {
             //arrange
-            var source = new PandaTaskCompletionSource();
+            var source = UnsafeCompletionSource.Create();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,

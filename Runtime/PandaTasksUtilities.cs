@@ -254,7 +254,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <returns>Callback to pass as completion handler</returns>
         public static Action CallbackTask( out IPandaTask resultTask )
         {
-            var tcs = new PandaTaskCompletionSource();
+            var tcs = UnsafeCompletionSource.Create();
             resultTask = tcs.Task;
             return tcs.Resolve;
         }
