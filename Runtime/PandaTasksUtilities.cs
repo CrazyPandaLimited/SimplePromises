@@ -242,9 +242,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <returns>Callback to pass as completion handler</returns>
         public static Action< T > CallbackTask< T >( out IPandaTask< T > resultTask )
         {
-            var tcs = new PandaTaskCompletionSource< T >();
-            resultTask = tcs.ResultTask;
-            return tcs.SetValue;
+            var result = new PandaTask< T >();
+            resultTask = result;
+            return result.SetValue;
         }
 
         /// <summary>
@@ -254,9 +254,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <returns>Callback to pass as completion handler</returns>
         public static Action CallbackTask( out IPandaTask resultTask )
         {
-            var tcs = UnsafeCompletionSource.Create();
-            resultTask = tcs.Task;
-            return tcs.Resolve;
+            var result = new PandaTask< T >();
+            resultTask = result;
+            return result.Resolve;
         }
 
         /// <summary>

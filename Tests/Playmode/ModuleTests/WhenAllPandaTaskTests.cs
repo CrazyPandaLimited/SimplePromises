@@ -265,11 +265,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteTest()
         {
             //arrange
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTask();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,
-                source.Task
+                source
             };
 
             var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
@@ -286,11 +286,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteErrorTest()
         {
             //arrange
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTask();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,
-                source.Task
+                source
             };
 
             var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
@@ -307,11 +307,11 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void ChangeCollectionCompleteWithErrorTest()
         {
             //arrange
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTask();
             var tasks = new List< IPandaTask >
             {
                 PandaTasksUtilities.CompletedTask,
-                source.Task
+                source
             };
 
             var allTask = new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
@@ -319,7 +319,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             //act
             var testError = new Exception();
-            source.SetError( testError );
+            source.Reject( testError );
  
             //assert
             Assert.AreEqual( PandaTaskStatus.Rejected, allTask.Status );
