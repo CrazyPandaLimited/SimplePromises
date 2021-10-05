@@ -376,6 +376,16 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( TestSynchronizationContext.HandleException(), Is.InstanceOf< TestException >() );
         }
 
+        [AsyncTest]
+        public async IPandaTask WaitAll_Should_Success()
+        {
+            var waitAllTask =  PandaTasksUtilities.WaitAll( new List<IPandaTask> { PandaTasksUtilities.Delay( 100 ), PandaTasksUtilities.Delay( 200 ) } );
+
+            await waitAllTask;
+
+            Assert.AreEqual( PandaTaskStatus.Resolved, waitAllTask.Status );
+        }
+
         private async IPandaTask< int > ResultTask(int durationMilliseconds)
         {
             await PandaTasksUtilities.Delay( durationMilliseconds );
