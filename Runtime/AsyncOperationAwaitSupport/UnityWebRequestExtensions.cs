@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CrazyPanda.UnityCore.PandaTasks;
 using CrazyPanda.UnityCore.PandaTasks.Progress;
 using CrazyPanda.UnityCore.Utils;
-using MiscUtil.Extensions;
 using UnityEngine.Networking;
 
 [ DebuggerNonUserCode ]
@@ -18,7 +17,6 @@ public static class UnityWebRequestExtensions
 
     public static IPandaTask< UnityWebRequestAsyncOperation > WaitAsync( this UnityWebRequest webRequest, IProgressTracker< float > progressTracker )
     {
-        progressTracker.ThrowIfNull();
         progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
         return webRequest.SendWebRequest().WaitAsync( progressTracker, CancellationToken.None );
     }
