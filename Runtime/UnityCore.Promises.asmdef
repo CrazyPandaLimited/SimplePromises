@@ -1,3 +1,14 @@
 {
-	"name": "UnityCore.Promises"
+    "name": "UnityCore.Promises",
+    "references": [
+        "UnityCore.UtilsCollectionSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "noEngineReferences": false
 }

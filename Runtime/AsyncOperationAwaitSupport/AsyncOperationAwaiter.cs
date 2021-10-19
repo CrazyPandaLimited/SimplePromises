@@ -6,15 +6,16 @@ using UnityEngine;
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     [ DebuggerNonUserCode ]
-    public readonly struct AsyncOperationAwaiter : INotifyCompletion
+    public readonly struct AsyncOperationAwaiter <TOperation> : INotifyCompletion where TOperation : AsyncOperation
     {
-        private readonly AsyncOperation _asyncOperation;
-        public bool IsCompleted => _asyncOperation.isDone;
+        public readonly TOperation AsyncOperation;
 
-        public AsyncOperationAwaiter( AsyncOperation asyncOperation ) => _asyncOperation = asyncOperation;
+        public bool IsCompleted => AsyncOperation.isDone;
 
-        public void OnCompleted( Action continuation ) => _asyncOperation.completed += _ => continuation();
+        public AsyncOperationAwaiter( TOperation asyncOperation ) => AsyncOperation = asyncOperation;
 
-        public void GetResult() { }
+        public void OnCompleted( Action continuation ) => AsyncOperation.completed += _ => continuation();
+
+        public TOperation GetResult() => AsyncOperation;
     }
 }

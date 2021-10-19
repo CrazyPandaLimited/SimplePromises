@@ -1,7 +1,8 @@
 {
     "name": "UnityCore.Promises.AsyncOperationAwaitSupport",
     "references": [
-        "UnityCore.Promises"
+        "UnityCore.Promises",
+        "UnityCore.UtilsCollectionSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
