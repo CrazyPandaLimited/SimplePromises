@@ -13,7 +13,7 @@ public static class AsyncOperationAwaiterExtensions
 
     public static async IPandaTask< T > WaitAsync< T >( this T asyncOperation, IProgressTracker< float > progressTracker ) where T : AsyncOperation
     {
-        progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+        progressTracker.CheckArgumentForNull( nameof(progressTracker) );
         
         while( !asyncOperation.isDone )
         {

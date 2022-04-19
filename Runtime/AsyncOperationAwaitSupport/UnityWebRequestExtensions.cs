@@ -17,7 +17,7 @@ public static class UnityWebRequestExtensions
 
     public static IPandaTask< UnityWebRequestAsyncOperation > WaitAsync( this UnityWebRequest webRequest, IProgressTracker< float > progressTracker )
     {
-        progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+        progressTracker.CheckArgumentForNull( nameof(progressTracker) );
         return webRequest.SendWebRequest().WaitAsync( progressTracker, CancellationToken.None );
     }
 
@@ -28,7 +28,7 @@ public static class UnityWebRequestExtensions
 
     public static IPandaTask< UnityWebRequestAsyncOperation > WaitAsync( this UnityWebRequest webRequest, IProgressTracker< float > progressTracker, CancellationToken cancellationToken )
     {
-        progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+        progressTracker.CheckArgumentForNull( nameof(progressTracker) );
         return webRequest.SendWebRequest().WaitAsync( progressTracker, cancellationToken );
     }
     

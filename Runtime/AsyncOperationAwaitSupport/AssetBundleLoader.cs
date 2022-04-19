@@ -10,54 +10,54 @@ namespace CrazyPanda.UnityCore.PandaTasks
     {
         public static IPandaTask< UnityWebRequestAsyncOperation > PartlyLoadAssetBundle( string uri )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
+            uri.ValidateEmptyString( nameof(uri) );
             return PartlyLoadAssetBundleInternal( uri );
         }
         
         public static IPandaTask< UnityWebRequestAsyncOperation > PartlyLoadAssetBundle( string uri, IProgressTracker<float> progressTracker )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
-            progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+            uri.ValidateEmptyString( nameof(uri) );
+            progressTracker.CheckArgumentForNull( nameof(progressTracker) );
             return PartlyLoadAssetBundleInternal( uri, progressTracker, CancellationToken.None );
         }
         
         public static IPandaTask< UnityWebRequestAsyncOperation > PartlyLoadAssetBundle( string uri, CancellationToken cancellationToken )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
+            uri.ValidateEmptyString( nameof(uri) );
             return PartlyLoadAssetBundleInternal( uri, null, cancellationToken );
         }
 
         public static IPandaTask< UnityWebRequestAsyncOperation > PartlyLoadAssetBundle( string uri, IProgressTracker<float> progressTracker,
                                                                                          CancellationToken cancellationToken )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
-            progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+            uri.ValidateEmptyString( nameof(uri) );
+            progressTracker.CheckArgumentForNull( nameof(progressTracker) );
             return PartlyLoadAssetBundleInternal( uri, progressTracker, cancellationToken );
         }
 
         public static IPandaTask< AssetBundle > FullLoadAssetBundleAsync( string uri )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
+            uri.ValidateEmptyString( nameof(uri) );
             return FullLoadAssetBundleInternal( uri, null, CancellationToken.None );
         }
 
         public static IPandaTask< AssetBundle > FullLoadAssetBundleAsync( string uri, IProgressTracker<float> progressTracker )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
-            progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+            uri.ValidateEmptyString( nameof(uri) );
+            progressTracker.CheckArgumentForNull( nameof(progressTracker) );
             return FullLoadAssetBundleInternal( uri, progressTracker, CancellationToken.None );
         }
         
         public static IPandaTask< AssetBundle > FullLoadAssetBundleAsync( string uri, CancellationToken cancellationToken )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
+            uri.ValidateEmptyString( nameof(uri) );
             return FullLoadAssetBundleInternal( uri, null, cancellationToken );
         }
 
         public static IPandaTask< AssetBundle > FullLoadAssetBundleAsync( string uri, IProgressTracker<float> progressTracker, CancellationToken cancellationToken )
         {
-            uri.ThrowArgumentNullExceptionIfNull( nameof(uri) );
-            progressTracker.ThrowArgumentNullExceptionIfNull( nameof(progressTracker) );
+            uri.ValidateEmptyString( nameof(uri) );
+            progressTracker.CheckArgumentForNull( nameof(progressTracker) );
             return FullLoadAssetBundleInternal( uri, progressTracker, cancellationToken );
         }
         
