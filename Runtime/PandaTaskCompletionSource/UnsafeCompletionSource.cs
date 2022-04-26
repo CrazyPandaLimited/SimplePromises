@@ -11,9 +11,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
     /// Structure that wraps <see cref="IPandaTask"/> instance. Construct new instances with <see cref="Create"/>.
     /// Use it in places where high performance is required to eliminate allocation of additional class instances.
     /// </summary>
-    public readonly struct UnsafeCompletionSource : IEquatable<UnsafeCompletionSource>
+    public struct UnsafeCompletionSource : IEquatable<UnsafeCompletionSource>
     {
-        private readonly PandaTask _controlledTask;
+        private PandaTask _controlledTask;
 
         /// <summary>
         /// Task associated with <see cref="UnsafeCompletionSource"/>
@@ -33,14 +33,12 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <returns></returns>
         public static UnsafeCompletionSource Create()
         {
-            return new UnsafeCompletionSource( new PandaTask() );
+            return new UnsafeCompletionSource
+            {
+                _controlledTask = new PandaTask()
+            };
         }
 
-        private UnsafeCompletionSource( PandaTask controlledTask )
-        {
-            _controlledTask = controlledTask;
-        }
-        
         /// <summary>
         /// Complete task with error
         /// </summary>
