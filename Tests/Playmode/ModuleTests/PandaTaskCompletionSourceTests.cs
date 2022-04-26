@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    class UnsafeCompletionSourceTests
+    class PandaTaskCompletionSourceTests
     {
         [ Test ]
         public void Create_Should_Succeed()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             Assert.That( source.Task, Is.Not.Null );
             Assert.That( source.Task.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
@@ -22,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void Create_With_CancellationToken_Should_Succeed()
         {
-            var source = UnsafeCompletionSource.Create( new CancellationToken() );
+            var source = new PandaTaskCompletionSource( new CancellationToken() );
 
             Assert.That( source.Task, Is.Not.Null );
             Assert.That( source.Task.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
@@ -31,7 +28,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void CreateTResult_Should_Succeed()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource<int>();
 
             Assert.That( source.ResultTask, Is.Not.Null );
             Assert.That( source.ResultTask.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
@@ -40,16 +37,16 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void CreateTResult_With_CancellationToken_Should_Succeed()
         {
-            var source = UnsafeCompletionSource< int >.Create(new CancellationToken());
+            var source = new PandaTaskCompletionSource< int >(new CancellationToken());
 
             Assert.That( source.ResultTask, Is.Not.Null );
             Assert.That( source.ResultTask.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
         }
 
-        [ Test ]
+             [ Test ]
         public void SetError_Should_RejectTask_WithDefaultException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
 
             source.SetError();
 
@@ -60,7 +57,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetError_Should_RejectTask_WithDefaultException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
 
             Assert.IsTrue( source.TrySetError() );
             Assert.That( source.Task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
@@ -70,7 +67,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetError_Should_Not_RejectTask_WithDefaultException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
 
             source.SetError();
             Assert.IsFalse(source.TrySetError());
@@ -109,7 +106,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void SetError_Should_RejectTask_WithSpecificException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
             var exception = new ArgumentException();
 
             source.SetError( exception );
@@ -121,7 +118,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetError_Should_RejectTask_WithSpecificException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
             var exception = new ArgumentException();
 
             Assert.IsTrue( source.TrySetError( exception ) );
@@ -131,7 +128,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetError_Should_Not_RejectTask_WithSpecificException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
             var exception = new ArgumentException();
 
             source.SetError( exception );
@@ -174,7 +171,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void SetError_Should_Throw_WithNullException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
 
             Assert.That( () => source.SetError( null ), Throws.ArgumentNullException );
         }
@@ -182,7 +179,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetError_Should_Throw_WithNullException()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source =new PandaTaskCompletionSource();
 
             Assert.That( () => source.TrySetError( null ), Throws.ArgumentNullException );
         }
@@ -190,7 +187,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void SetErrorTResult_Should_Throw_WithNullException()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source =new PandaTaskCompletionSource< int >();
 
             Assert.That( () => source.SetError( null ), Throws.ArgumentNullException );
         }
@@ -198,7 +195,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetErrorTResult_Should_Throw_WithNullException()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source =new PandaTaskCompletionSource< int >();
 
             Assert.That( () => source.TrySetError( null ), Throws.ArgumentNullException );
         }
@@ -206,7 +203,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void Resolve_Should_ResolveTask()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             source.Resolve();
 
@@ -216,7 +213,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryResolve_Should_ResolveTask()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             var result = source.TryResolve();
 
@@ -227,7 +224,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryResolve_Should_Not_ResolveTask()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             source.Resolve();
             Assert.IsFalse( source.TryResolve());
@@ -236,7 +233,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void SetValueTResult_Should_ResolveTask()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
 
             source.SetValue( 123 );
 
@@ -247,7 +244,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetValueTResult_Should_ResolveTask()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
 
             var result = source.TrySetValue( 123 );
 
@@ -259,7 +256,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TrySetValueTResult_Should_Not_ResolveTask()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
             
             source.SetValue( 123 );
             Assert.IsFalse( source.TrySetValue( 123 ) );
@@ -268,7 +265,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void CancelTask_Should_RejectTask_WithTaskCancelled()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             source.CancelTask();
 
@@ -279,7 +276,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryCancelTask_Should_RejectTask_WithTaskCancelled()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             source.TryCancelTask();
 
@@ -290,7 +287,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryCancelTask_Should_Not_RejectTask()
         {
-            var source = UnsafeCompletionSource.Create();
+            var source = new PandaTaskCompletionSource();
 
             source.CancelTask();
             Assert.IsFalse( source.TryCancelTask() );
@@ -300,7 +297,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void CancelTask_Should_RejectTask_WithCancellationToken()
         {
             var cancellationToken = new CancellationTokenSource();
-            var source = UnsafeCompletionSource.Create( cancellationToken.Token );
+            var source = new PandaTaskCompletionSource( cancellationToken.Token );
 
             cancellationToken.Cancel();
 
@@ -311,7 +308,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void CancelTaskTResult_Should_RejectTask_WithTaskCancelled()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
 
             source.CancelTask();
 
@@ -322,7 +319,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryCancelTaskTResult_Should_RejectTask()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
 
             Assert.IsTrue( source.TryCancelTask() );
             Assert.That( source.ResultTask.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
@@ -332,7 +329,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void TryCancelTaskTResult_Should_Not_RejectTask()
         {
-            var source = UnsafeCompletionSource< int >.Create();
+            var source = new PandaTaskCompletionSource< int >();
 
             source.CancelTask();
             Assert.IsFalse( source.TryCancelTask() );
@@ -342,36 +339,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void CancelTaskTResult_Should_RejectTask_WithCancellationToken()
         {
             var cancellationToken = new CancellationTokenSource();
-            var source = UnsafeCompletionSource< int >.Create(cancellationToken.Token);
+            var source = new PandaTaskCompletionSource< int >(cancellationToken.Token);
 
             cancellationToken.Cancel();
 
             Assert.That( source.ResultTask.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
             Assert.That( source.ResultTask.Error, Is.InstanceOf< TaskCanceledException >() );
-        }
-
-        [ Test ]
-        public void Uninitialized_Should_Throw()
-        {
-            var source = new UnsafeCompletionSource();
-
-            Assert.That( () => source.Task, Throws.InvalidOperationException );
-            Assert.That( () => source.SetError(), Throws.InvalidOperationException );
-            Assert.That( () => source.SetError( new ArgumentException() ), Throws.InvalidOperationException );
-            Assert.That( () => source.Resolve(), Throws.InvalidOperationException );
-            Assert.That( () => source.CancelTask(), Throws.InvalidOperationException );
-        }
-
-        [ Test ]
-        public void UninitializedTResult_Should_Throw()
-        {
-            var source = new UnsafeCompletionSource< int >();
-
-            Assert.That( () => source.ResultTask, Throws.InvalidOperationException );
-            Assert.That( () => source.SetError(), Throws.InvalidOperationException );
-            Assert.That( () => source.SetError( new ArgumentException() ), Throws.InvalidOperationException );
-            Assert.That( () => source.SetValue( 123 ), Throws.InvalidOperationException );
-            Assert.That( () => source.CancelTask(), Throws.InvalidOperationException );
         }
     }
 }

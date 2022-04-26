@@ -1,55 +1,133 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using CrazyPanda.UnityCore.Utils;
 
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
 	public class PandaTaskCompletionSource
 	{
-		private readonly PandaTask _controledTask = new PandaTask();
+		private readonly PandaTask _controlledTask;
 
+        public PandaTaskCompletionSource()
+        {
+            _controlledTask = new PandaTask();
+        }
+        
+        public PandaTaskCompletionSource( CancellationToken cancellationToken )
+        {
+            if( cancellationToken.IsCancellationRequested )
+            {
+                _controlledTask = PandaTasksUtilities.CanceledTaskInternal;
+                return;
+            }
+
+            _controlledTask = new PandaTask();
+            
+            if( cancellationToken.CanBeCanceled )
+            {
+                cancellationToken.Register( TryCancelTaskInternal );
+            }
+        }
+        
 		/// <summary>
 		/// Task associated with CompletionSource
 		/// </summary>
-		public IPandaTask Task => _controledTask;
+		public IPandaTask Task => _controlledTask;
 
 		/// <summary>
 		/// Complete task with error
 		/// </summary>
 		public void SetError( Exception ex )
 		{
-			//check argument
-			if( ex == null )
-			{
-				throw new ArgumentNullException( nameof(ex) );
-			}
-
 			//set error
-			_controledTask.Reject( ex );
+			_controlledTask.Reject( ex );
 		}
+        
+        /// <summary>
+        /// Try to complete task with error without reason
+        /// </summary>
+        public bool TrySetError(Exception ex )
+        {
+            if( _controlledTask.Status == PandaTaskStatus.Pending )
+            {
+                SetError( ex );
+                return true;
+            }
+
+            return false;
+        }
 
 		/// <summary>
 		/// Complete task with error without reason
 		/// </summary>
 		public void SetError()
 		{
-			_controledTask.Reject();
+			_controlledTask.Reject();
 		}
 
+        /// <summary>
+        /// Try to complete task with error without reason
+        /// </summary>
+        public bool TrySetError()
+        {
+            if( _controlledTask.Status == PandaTaskStatus.Pending )
+            {
+                SetError();
+                return true;
+            }
+
+            return false;
+        }
+        
 		/// <summary>
 		/// Complete task with success
 		/// </summary>
 		public void Resolve()
 		{
-			_controledTask.Resolve();
+			_controlledTask.Resolve();
 		}
+
+        /// <summary>
+        /// Try to complete task with success
+        /// </summary>
+        public bool TryResolve()
+        {
+            if( _controlledTask.Status == PandaTaskStatus.Pending )
+            {
+                this.Resolve();
+                return true;
+            }
+
+            return false;
+        }
 
 		/// <summary>
 		/// Cancel task with TaskCanceled exception
 		/// </summary>
 		public void CancelTask()
 		{
-			_controledTask.Reject( new TaskCanceledException() );
+			_controlledTask.Reject( new TaskCanceledException() );
 		}
-	}
+        
+        /// <summary>
+        /// Try to cancel task
+        /// </summary>
+        public bool TryCancelTask()
+        {
+            if( _controlledTask.Status == PandaTaskStatus.Pending )
+            {
+                this.CancelTask();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void TryCancelTaskInternal()
+        {
+            this.TryCancelTask();
+        }
+    }
 }

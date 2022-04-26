@@ -19,7 +19,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
             var canceledTask = new PandaTask();
             canceledTask.TryCancel();
-            CanceledTask = canceledTask;
+            CanceledTaskInternal = canceledTask;
         }
 
         /// <summary>
@@ -30,7 +30,12 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Canceled Task
         /// </summary>
-        public static readonly IPandaTask CanceledTask;
+        public static IPandaTask CanceledTask => CanceledTaskInternal;
+            
+        /// <summary>
+        /// Canceled Task
+        /// </summary>
+        internal static readonly PandaTask CanceledTaskInternal;
             
 		/// <summary>
 		/// Returns completed task with result
@@ -56,6 +61,14 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// Create task with TaskCanceledException.
         /// </summary>
         public static IPandaTask< T > GetCanceledTask< T >()
+        {
+            return GetCanceledTaskInternal<T>();
+        }
+
+        /// <summary>
+        /// Create task with TaskCanceledException.
+        /// </summary>
+        internal static PandaTask< T > GetCanceledTaskInternal< T >()
         {
             return CancelledPandaTaskProvider< T >.Value;
         }
