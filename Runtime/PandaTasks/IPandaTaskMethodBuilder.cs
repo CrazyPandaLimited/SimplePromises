@@ -17,7 +17,10 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
         public static IPandaTaskMethodBuilder Create() => default;
 
-        public void SetStateMachine( IAsyncStateMachine stateMachine ) { }
+        public void SetStateMachine( IAsyncStateMachine stateMachine )
+        {
+            _pandaTaskMethodBuilder.SetStateMachine( stateMachine );
+        }
 
         [ DebuggerStepThrough ]
         public void Start< TStateMachine >( ref TStateMachine stateMachine )
@@ -54,7 +57,10 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
         public static IPandaTaskMethodBuilder< TResult > Create() => default;
 
-        public void SetStateMachine( IAsyncStateMachine stateMachine ) { }
+        public void SetStateMachine( IAsyncStateMachine stateMachine )
+        {
+            _pandaTaskMethodBuilder.SetStateMachine( stateMachine );
+        }
 
         [ DebuggerStepThrough ]
         public void Start< TStateMachine >( ref TStateMachine stateMachine )
