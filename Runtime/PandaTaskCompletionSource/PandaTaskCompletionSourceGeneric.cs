@@ -34,7 +34,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		/// <summary>
 		/// Controlled Task
 		/// </summary>
-		public IPandaTask< TResult > ResultTask => _controlledTask;
+		public PandaTask< TResult > ResultTask => _controlledTask;
 
 		/// <summary>
 		/// Complete task with error

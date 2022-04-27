@@ -20,7 +20,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Task associated with <see cref="UnsafeCompletionSource"/>
         /// </summary>
-        public IPandaTask Task
+        public PandaTask Task
         {
             get
             {
