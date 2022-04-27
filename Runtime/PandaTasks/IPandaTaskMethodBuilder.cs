@@ -11,115 +11,74 @@ namespace CrazyPanda.UnityCore.PandaTasks
     [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder
     {
-        private PandaTask< VoidResult > _task;
+        private PandaTaskMethodBuilder _pandaTaskMethodBuilder;
 
-        public IPandaTask Task => _task ?? (_task = new PandaTask< VoidResult >());
+        public IPandaTask Task => _pandaTaskMethodBuilder.Task;
 
         public static IPandaTaskMethodBuilder Create() => default;
 
-        public void SetStateMachine( IAsyncStateMachine stateMachine )
-        {
-        }
+        public void SetStateMachine( IAsyncStateMachine stateMachine ) { }
 
         [ DebuggerStepThrough ]
         public void Start< TStateMachine >( ref TStateMachine stateMachine )
             where TStateMachine : IAsyncStateMachine
         {
-            stateMachine.MoveNext();
+            _pandaTaskMethodBuilder.Start( ref stateMachine );
         }
 
         public void AwaitOnCompleted< TAwaiter, TStateMachine >( ref TAwaiter awaiter, ref TStateMachine machine )
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            PandaTaskMethodBuilder< VoidResult >.AwaitOnCompleted( ref awaiter, ref machine, ref _task );
+            _pandaTaskMethodBuilder.AwaitOnCompleted( ref awaiter, ref machine );
         }
 
         public void AwaitUnsafeOnCompleted< TAwaiter, TStateMachine >( ref TAwaiter awaiter, ref TStateMachine machine )
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            PandaTaskMethodBuilder< VoidResult >.AwaitOnCompleted( ref awaiter, ref machine, ref _task );
+            _pandaTaskMethodBuilder.AwaitUnsafeOnCompleted( ref awaiter, ref machine );
         }
 
-        public void SetResult()
-        {
-            if( _task == null )
-            {
-                _task = new PandaTask< VoidResult >();
-            }
-
-            _task.Resolve();
-        }
+        public void SetResult() => _pandaTaskMethodBuilder.SetResult();
         
-        public void SetException( Exception ex )
-        {
-            if( _task == null )
-            {
-                _task = new PandaTask< VoidResult >();
-            }
-
-            _task.Reject( ex );
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
-        struct VoidResult
-        {
-        }
+        public void SetException( Exception ex ) => _pandaTaskMethodBuilder.SetException( ex );
     }
 
     [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder< TResult >
     {
-        private PandaTask< TResult > _task;
+        private PandaTaskMethodBuilder< TResult > _pandaTaskMethodBuilder;
 
-        public IPandaTask< TResult > Task => _task ?? (_task = new PandaTask< TResult >());
+        public IPandaTask< TResult > Task => _pandaTaskMethodBuilder.Task;
 
         public static IPandaTaskMethodBuilder< TResult > Create() => default;
 
-        public void SetStateMachine( IAsyncStateMachine stateMachine )
-        {
-        }
+        public void SetStateMachine( IAsyncStateMachine stateMachine ) { }
 
         [ DebuggerStepThrough ]
         public void Start< TStateMachine >( ref TStateMachine stateMachine )
             where TStateMachine : IAsyncStateMachine
         {
-            stateMachine.MoveNext();
+            _pandaTaskMethodBuilder.Start( ref stateMachine );
         }
 
         public void AwaitOnCompleted< TAwaiter, TStateMachine >( ref TAwaiter awaiter, ref TStateMachine machine )
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            PandaTaskMethodBuilder< TResult >.AwaitOnCompleted( ref awaiter, ref machine, ref _task );
+            _pandaTaskMethodBuilder.AwaitOnCompleted( ref awaiter, ref machine  );
         }
 
         public void AwaitUnsafeOnCompleted< TAwaiter, TStateMachine >( ref TAwaiter awaiter, ref TStateMachine machine )
             where TAwaiter : INotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            PandaTaskMethodBuilder<TResult>.AwaitOnCompleted( ref awaiter, ref machine, ref _task );
+            _pandaTaskMethodBuilder.AwaitUnsafeOnCompleted( ref awaiter, ref machine  );
         }
 
-        public void SetResult( TResult value )
-        {
-            if( _task == null )
-            {
-                _task = new PandaTask< TResult >();
-            }
+        public void SetResult( TResult value ) => _pandaTaskMethodBuilder.SetResult( value );
 
-            _task.SetValue( value );
-        }
-
-        public void SetException( Exception ex )
-        {
-            if( _task == null )
-            {
-                _task = new PandaTask< TResult >();
-            }
-
-            _task.Reject( ex );
-        }
+        public void SetException( Exception ex ) => _pandaTaskMethodBuilder.SetException( ex );
     }
 }
