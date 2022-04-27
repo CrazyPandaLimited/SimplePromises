@@ -8,7 +8,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
     /// <summary>
     /// This is left only for compatibility with old code
     /// </summary>
-    [Obsolete("Use PandaTaskMethodBuilder instead it")]
+    [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder
     {
         private PandaTask< VoidResult > _task;
@@ -68,7 +68,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         }
     }
 
-    [Obsolete("Use PandaTaskMethodBuilder instead it")]
+    [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder< TResult >
     {
         private PandaTask< TResult > _task;
