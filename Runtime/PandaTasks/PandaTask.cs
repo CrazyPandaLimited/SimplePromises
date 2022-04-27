@@ -18,8 +18,10 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		public PandaTaskStatus Status { get; set; }
         public sealed override bool keepWaiting => Status == PandaTaskStatus.Pending;
 
-		public IPandaTask Done( Action completeHandler )
-		{
+        internal PandaTask() { }
+
+        public IPandaTask Done( Action completeHandler )
+        {
 			//check arguments
 			if( completeHandler == null )
 			{

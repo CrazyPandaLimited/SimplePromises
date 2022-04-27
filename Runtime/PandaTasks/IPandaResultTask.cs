@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using static CrazyPanda.UnityCore.PandaTasks.Consts;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
 #pragma warning disable CS0436 // Type conflicts with imported type
 	[AsyncMethodBuilder( typeof( PandaTaskMethodBuilder<> ) )]
 #pragma warning restore CS0436 // Type conflicts with imported type
-    [ Obsolete( "This interface is deprecated and will be removed soon. Please, use \"PandaTask\" instead it.", false) ]
+    [ Obsolete( DeprecatedMessage, false) ]
 	public interface IPandaTask< TResult > : IPandaTask
 	{
 		/// <summary>

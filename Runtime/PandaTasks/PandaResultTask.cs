@@ -33,7 +33,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
 			}
 		}
 
-		public IPandaTask< TResult > FailResult( Action< Exception > errorhandler )
+        internal PandaTask() { }
+
+        public IPandaTask< TResult > FailResult( Action< Exception > errorhandler )
 		{
 			Fail( errorhandler );
 			return this;
