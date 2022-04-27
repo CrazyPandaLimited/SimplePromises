@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     [ DebuggerNonUserCode ]
-	internal class PandaTask : CustomYieldInstruction, IPandaTask
+	public class PandaTask : CustomYieldInstruction, IPandaTask
 	{
 		private Action _doneAction;
 		private Action< Exception > _failAction;
@@ -16,7 +16,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 
         public Exception Error => _errorInfo?.SourceException;
 		public PandaTaskStatus Status { get; set; }
-		public override bool keepWaiting => Status == PandaTaskStatus.Pending;
+        public sealed override bool keepWaiting => Status == PandaTaskStatus.Pending;
 
 		public IPandaTask Done( Action completeHandler )
 		{
@@ -198,7 +198,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="expectedStatus">expectedStatus</param>
         [ MethodImpl( MethodImplOptions.AggressiveInlining ) ]
-        protected void ValidateStatus( PandaTaskStatus expectedStatus )
+        private void ValidateStatus( PandaTaskStatus expectedStatus )
         {
             if( expectedStatus != Status )
             {

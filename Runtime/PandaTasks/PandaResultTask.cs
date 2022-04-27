@@ -8,7 +8,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
 	/// </summary>
 	/// <typeparam name="TResult">Type of future</typeparam>
     [ DebuggerNonUserCode ]
-	internal class PandaTask< TResult > : PandaTask, IPandaTask< TResult >
+	public class PandaTask< TResult > : PandaTask, IPandaTask< TResult >
 	{
 		private TResult _result;
 
