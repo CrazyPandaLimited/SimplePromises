@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
@@ -7,6 +8,9 @@ namespace CrazyPanda.UnityCore.PandaTasks
 	/// Class represents future with value type TResult
 	/// </summary>
 	/// <typeparam name="TResult">Type of future</typeparam>
+#pragma warning disable CS0436 // Type conflicts with imported type
+    [AsyncMethodBuilder( typeof( PandaTaskMethodBuilder<> ) )]
+#pragma warning restore CS0436 // Type conflicts with imported type
     [ DebuggerNonUserCode ]
 	public class PandaTask< TResult > : PandaTask, IPandaTask< TResult >
 	{

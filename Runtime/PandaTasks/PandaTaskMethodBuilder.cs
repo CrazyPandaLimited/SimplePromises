@@ -9,7 +9,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
     {
         private PandaTask< VoidResult > _task;
 
-        public IPandaTask Task => _task ?? (_task = new PandaTask< VoidResult >());
+        public PandaTask Task => _task ?? (_task = new PandaTask< VoidResult >());
 
         public static PandaTaskMethodBuilder Create() => default;
 
