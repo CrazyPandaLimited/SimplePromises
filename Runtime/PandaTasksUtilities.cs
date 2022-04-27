@@ -331,8 +331,21 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <typeparam name="T">Result type</typeparam>
         /// <param name="resultTask">Resulting task that you will await</param>
         /// <returns>Callback to pass as completion handler</returns>
-        [ Obsolete( DeprecatedMessage, false ) ]
+        [ Obsolete( "This method is deprecated and will be removed soon, use \"GetCallbackTask\" with \"PandaTask\" instead it", false ) ]
         public static Action< T > CallbackTask< T >( out IPandaTask< T > resultTask )
+        {
+            var result = new PandaTask< T >();
+            resultTask = result;
+            return result.SetValue;
+        }
+        
+        /// <summary>
+        /// Helps to get a <see cref="IPandaTask" /> from callback based async method.
+        /// </summary>
+        /// <typeparam name="T">Result type</typeparam>
+        /// <param name="resultTask">Resulting task that you will await</param>
+        /// <returns>Callback to pass as completion handler</returns>
+        public static Action< T > GetCallbackTask< T >( out PandaTask< T > resultTask )
         {
             var result = new PandaTask< T >();
             resultTask = result;
@@ -344,8 +357,20 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="resultTask">Resulting task that you will await</param>
         /// <returns>Callback to pass as completion handler</returns>
-        [ Obsolete( DeprecatedMessage, false ) ]
+        [ Obsolete( "This method is deprecated and will be removed soon, use \"GetCallbackTask\" with \"PandaTask\" instead it", false ) ]
         public static Action CallbackTask( out IPandaTask resultTask )
+        {
+            var result = new PandaTask();
+            resultTask = result;
+            return result.Resolve;
+        }
+
+        /// <summary>
+        /// Helps to get a <see cref="IPandaTask" /> from callback based async method.
+        /// </summary>
+        /// <param name="resultTask">Resulting task that you will await</param>
+        /// <returns>Callback to pass as completion handler</returns>
+        public static Action GetCallbackTask( out PandaTask resultTask )
         {
             var result = new PandaTask();
             resultTask = result;
