@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
     /// <summary>
     /// This is left only for compatibility with old code
     /// </summary>
-    [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder
     {
         private PandaTaskMethodBuilder _pandaTaskMethodBuilder;
@@ -48,7 +46,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         public void SetException( Exception ex ) => _pandaTaskMethodBuilder.SetException( ex );
     }
 
-    [Obsolete("Use PandaTaskMethodBuilder instead it", false)]
     public struct IPandaTaskMethodBuilder< TResult >
     {
         private PandaTaskMethodBuilder< TResult > _pandaTaskMethodBuilder;

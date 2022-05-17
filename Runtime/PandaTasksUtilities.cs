@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static CrazyPanda.UnityCore.PandaTasks.Consts;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
@@ -96,7 +95,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
 		/// <summary>
 		/// Construct sequence task from Task params
 		/// </summary>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask Sequence( params IPandaTask[ ] tasks )
 		{
 			return Sequence( ( IEnumerable< IPandaTask > ) tasks );
@@ -113,7 +111,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Construct sequence task from Tasks collection
         /// </summary>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask Sequence( IEnumerable< IPandaTask > tasksCollection )
 		{
 			//check arguments
@@ -141,7 +138,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Creates task for waiting all tasks.
         /// </summary>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAll( params IPandaTask[ ] tasks )
         {
             return new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
@@ -160,7 +156,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// Creates task for waiting all tasks.
         /// </summary>
         /// <param name="tasks">task`s collection</param>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAll( IEnumerable< IPandaTask > tasks )
         {
             return new WhenAllPandaTask( tasks, CancellationStrategy.Aggregate );
@@ -181,7 +176,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="strategy">strategy for TaskCanceledException`s aggregation</param>
         /// <param name="tasks">task`s collection</param>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAll( CancellationStrategy strategy, params IPandaTask[ ] tasks )
         {
             return new WhenAllPandaTask( tasks, strategy );
@@ -202,7 +196,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="strategy">strategy for TaskCanceledException`s aggregation</param>
         /// <param name="tasks">task`s collection</param>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAll( CancellationStrategy strategy, IEnumerable< IPandaTask > tasks )
         {
             return new WhenAllPandaTask( tasks, strategy );
@@ -219,7 +212,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Creates task for waiting first completed of rejected of tasks.
         /// </summary>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAny( params IPandaTask[ ] tasksCollection )
         {
             return new WhenAnyPandaTask( tasksCollection );
@@ -236,7 +228,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <summary>
         /// Creates task for waiting first completed of rejected of tasks
         /// </summary>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static PandaTask WaitAny( IEnumerable< IPandaTask > tasksCollection )
         {
             return new WhenAnyPandaTask( tasksCollection );
@@ -331,7 +322,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <typeparam name="T">Result type</typeparam>
         /// <param name="resultTask">Resulting task that you will await</param>
         /// <returns>Callback to pass as completion handler</returns>
-        [ Obsolete( "This method is deprecated and will be removed soon, use \"GetCallbackTask\" with \"PandaTask\" instead it", false ) ]
         public static Action< T > CallbackTask< T >( out IPandaTask< T > resultTask )
         {
             var result = new PandaTask< T >();
@@ -357,7 +347,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="resultTask">Resulting task that you will await</param>
         /// <returns>Callback to pass as completion handler</returns>
-        [ Obsolete( "This method is deprecated and will be removed soon, use \"GetCallbackTask\" with \"PandaTask\" instead it", false ) ]
         public static Action CallbackTask( out IPandaTask resultTask )
         {
             var result = new PandaTask();
@@ -392,7 +381,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// </summary>
         /// <param name="task">source task</param>
         /// <param name="ignoreCancel">ignore OperationCanceledException</param>
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static void RethrowError( this IPandaTask task, bool ignoreCancel = false )
         {
             //throw
@@ -430,7 +418,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <param name="timeoutMessage">Message for exception</param>
         /// <exception cref="ArgumentException">Thrown if time is negative</exception>
         /// <exception cref="TimeoutException" />
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask OrTimeout( this IPandaTask task, int milliseconds, string timeoutMessage = null )
         {
             return OrTimeout( task, TimeSpan.FromMilliseconds( milliseconds ), timeoutMessage );
@@ -457,7 +444,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <param name="timeoutMessage">Message for exception</param>
         /// <exception cref="ArgumentException">Thrown if time is negative</exception>
         /// <exception cref="TimeoutException" />
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask< T > OrTimeout< T >( this IPandaTask< T > task, int milliseconds, string timeoutMessage = null )
         {
             return OrTimeout( task, TimeSpan.FromMilliseconds( milliseconds ), timeoutMessage );
@@ -484,7 +470,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <param name="timeoutMessage">Message for exception</param>
         /// <exception cref="ArgumentException">Thrown if time is negative</exception>
         /// <exception cref="TimeoutException" />
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask OrTimeout( this IPandaTask task, TimeSpan timeout, string timeoutMessage = null )
         {
             if( task.Status != PandaTaskStatus.Pending )
@@ -525,7 +510,6 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <param name="timeoutMessage">Message for exception</param>
         /// <exception cref="ArgumentException">Thrown if time is negative</exception>
         /// <exception cref="TimeoutException" />
-        [ Obsolete( DeprecatedMessage, false ) ]
         public static IPandaTask< T > OrTimeout< T >( this IPandaTask< T > task, TimeSpan timeout, string timeoutMessage = null )
         {
             if( task.Status != PandaTaskStatus.Pending )

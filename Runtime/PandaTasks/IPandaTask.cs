@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using static CrazyPanda.UnityCore.PandaTasks.Consts;
 
 namespace CrazyPanda.UnityCore.PandaTasks
 {
 	/// <summary>
-	/// Represents async operation without value
+	/// Represents async operation without value0
 	/// </summary>
 #pragma warning disable CS0436 // Type conflicts with imported type
 	[AsyncMethodBuilder( typeof( IPandaTaskMethodBuilder ) )]
 #pragma warning restore CS0436 // Type conflicts with imported type
-    [ Obsolete( DeprecatedMessage, false) ]
     public interface IPandaTask : IDisposable
 	{
 		/// <summary>
