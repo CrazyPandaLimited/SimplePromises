@@ -499,7 +499,7 @@ namespace CrazyPanda.UnityCore.PandaTasks
         /// <exception cref="TimeoutException" />
         public static PandaTask< T > OrTimeout< T >( this PandaTask< T > task, TimeSpan timeout, string timeoutMessage = null )
         {
-            return ( PandaTask< T > )OrTimeout( ( IPandaTask )task, timeout, timeoutMessage );
+            return ( PandaTask< T > )OrTimeout( ( IPandaTask< T > )task, timeout, timeoutMessage );
         }
 
         /// <summary>

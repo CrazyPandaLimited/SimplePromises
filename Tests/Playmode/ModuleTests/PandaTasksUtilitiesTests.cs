@@ -279,6 +279,23 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( task.Result, Is.EqualTo( 1 ) );
         }
 
+        [AsyncTest]
+        public async Task OrTimeout_Should_Work_Without_Exception()
+        {
+            var taskToWait = PandaTasksUtilities.Delay( TimeSpan.FromSeconds( 2 ) );
+
+            var timeoutTask = taskToWait.OrTimeout( TimeSpan.FromSeconds( 10 ) );
+
+            try
+            {
+                await timeoutTask;
+            }
+            catch( Exception e )
+            {
+                Assert.Fail("Expected no exception, but got: " + e.Message);                
+            }
+        }
+        
         [ Test ]
         public void OrTimeout_Should_Reject_With_Rejected_IPandaTask()
         {
