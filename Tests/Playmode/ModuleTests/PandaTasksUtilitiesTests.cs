@@ -136,8 +136,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             // act            
             a = true;
-            
-            await PandaTasksUtilities.Delay( 1 );
+
+            await task;
             
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
@@ -166,9 +166,14 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             // arrange
             var task = PandaTasksUtilities.WaitWhile( () => throw new InvalidOperationException() );
 
-            // act
-            await PandaTasksUtilities.Delay( 1 );
-
+            try
+            {
+                await task;
+            }
+            catch( Exception e )
+            {
+            }
+            
             // assert
             Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
             Assert.That( task.Error, Is.InstanceOf< InvalidOperationException >() );
@@ -184,7 +189,8 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
             // act
             a = true;
-            await PandaTasksUtilities.Delay( 1 );
+
+            await task;
 
             // assert
             tokenSource.Cancel();
@@ -282,9 +288,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [AsyncTest]
         public async Task OrTimeout_Should_Work_Without_Exception()
         {
-            var taskToWait = PandaTasksUtilities.Delay( TimeSpan.FromSeconds( 2 ) );
+            var taskToWait = PandaTasksUtilities.Delay(  2  );
 
-            var timeoutTask = taskToWait.OrTimeout( TimeSpan.FromSeconds( 10 ) );
+            var timeoutTask = taskToWait.OrTimeout(  10 );
 
             try
             {
