@@ -14,7 +14,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void Initialize()
         {
             AssetBundle.UnloadAllAssetBundles( true );
-            _asyncOperation = AssetBundle.LoadFromFileAsync( "Assets/UnityCoreSystems/Promises/Tests/Playmode/ModuleTests/AsyncOperationAwaitSupportTests/Resources/test.bundle" );
+            _asyncOperation = AssetBundle.LoadFromFileAsync( "Assets/UnityCoreSystems/Systems/Promises/Tests/Playmode/ModuleTests/AsyncOperationAwaitSupportTests/Resources/test.bundle" );
         }
 
         [ TearDown ]
