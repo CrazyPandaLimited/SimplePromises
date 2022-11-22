@@ -17,7 +17,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
     }
 
     [ TestFixture( typeof( TestClass ), typeof( InheritedTestClass ) ) ]
-    [ TestFixture( typeof( object ), typeof( float ) ) ]
+    [ TestFixture( typeof( object ), typeof( TestClass ) ) ]
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitiesTests <T1,T2>
     {
