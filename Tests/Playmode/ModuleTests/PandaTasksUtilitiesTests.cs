@@ -6,7 +6,6 @@ using System.Threading;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ TestFixture( typeof( float ) ) ]
     [ TestFixture( typeof( object ) ) ]
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitiesTests <T>
