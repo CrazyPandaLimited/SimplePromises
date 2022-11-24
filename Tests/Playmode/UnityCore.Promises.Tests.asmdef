@@ -1,10 +1,12 @@
 {
     "name": "UnityCore.Promises.Tests",
+    "rootNamespace": "",
     "references": [
         "UnityCore.Promises",
         "UnityCore.Promises.AsyncTestsSupport",
         "UnityCore.UtilsCollectionSystem",
-        "UnityCore.Promises.AsyncOperationAwaitSupport"
+        "UnityCore.Promises.AsyncOperationAwaitSupport",
+        "UnityCore.TestsPerformance"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,9 +16,9 @@
         "nunit.framework.dll"
     ],
     "autoReferenced": true,
-	"defineConstraints": [
+    "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
-    ],		
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
