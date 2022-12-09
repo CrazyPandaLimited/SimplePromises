@@ -5,9 +5,6 @@ using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-#if !UNITY_EDITOR    
-    [Ignore("")]
-#endif    
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class AssetBundleCreateRequestAwaiterTests
     {
