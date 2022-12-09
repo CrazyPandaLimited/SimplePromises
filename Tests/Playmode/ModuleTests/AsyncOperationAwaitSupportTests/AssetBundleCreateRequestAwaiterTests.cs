@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using CrazyPanda.UnityCore.PandaTasks.Progress;
 using UnityEngine;
 using NUnit.Framework;
@@ -14,7 +16,12 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         public void Initialize()
         {
             AssetBundle.UnloadAllAssetBundles( true );
-            _asyncOperation = AssetBundle.LoadFromFileAsync( "Assets/UnityCoreSystems/Promises/Tests/Playmode/ModuleTests/AsyncOperationAwaitSupportTests/Resources/test.bundle" );
+            
+#if UNITY_EDITOR            
+            _asyncOperation = AssetBundle.LoadFromFileAsync( "Assets/UnityCoreSystems/Promises/Tests/Playmode/ModuleTests/AsyncOperationAwaitSupportTests/Bundle/Editor/test.bundle" );
+#else            
+            _asyncOperation = AssetBundle.LoadFromFileAsync( Path.Combine(Application.streamingAssetsPath,"test.bundle") );
+#endif
         }
 
         [ TearDown ]
