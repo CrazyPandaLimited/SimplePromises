@@ -3,9 +3,9 @@ using CrazyPanda.UnityCore.DeliverySystem;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    public sealed class AssetBundlesProvider : IAssetBundlesProvider
+    public sealed class AssetBundlesProvider : AssetBundlesToStreamingAssetsProvider
     {
-        public IEnumerable< string > AssetBundles
+        protected override IEnumerable< string > AssetBundles
         {
             get
             {
