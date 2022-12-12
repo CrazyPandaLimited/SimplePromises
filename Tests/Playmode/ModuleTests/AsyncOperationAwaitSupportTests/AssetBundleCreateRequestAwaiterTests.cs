@@ -20,7 +20,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 #if UNITY_EDITOR            
             _asyncOperation = AssetBundle.LoadFromFileAsync( "Assets/UnityCoreSystems/Promises/Tests/Playmode/ModuleTests/AsyncOperationAwaitSupportTests/Bundle/Editor/test.bundle" );
 #else            
-            _asyncOperation = AssetBundle.LoadFromFileAsync( Path.Combine(Application.streamingAssetsPath,"test.bundle") );
+            _asyncOperation = AssetBundle.LoadFromFileAsync( Path.Combine(Application.persistentDataPath,"test.bundle") );
 #endif
         }
 
