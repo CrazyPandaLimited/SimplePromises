@@ -12,7 +12,13 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
     [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class AssetBundleDownloadingTests
     {
-        private const string TestUri = "https://crazypandalimited.github.io/assets-system/files-for-testing/bundles/blue.bundle3d";
+        private static string TestUri
+        {
+            get
+            {
+                return $"https://unitycore.dev.crazypanda.ru/s/remote-asset-bundles/{GetPlatformPrefix()}/blue";
+            }
+        }
 
         [ SetUp ]
         public void Initialize()
@@ -98,5 +104,21 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             await Assert.ThrowsAsync< OperationCanceledException >( async () => await taskToWait.Invoke( progressTracker, cancellationToken.Token ) );
             Assert.That( progressTracker.Progress, Is.EqualTo( 1 ) );
         }
+        
+        private static string GetPlatformPrefix()
+        {
+#if UNITY_EDITOR            
+            return "Editor";
+#elif UNITY_STANDALONE_WIN
+            return "StandaloneWindows";
+#elif UNITY_ANDROID
+            return "Android";
+#elif UNITY_IOS
+            return "iOS";
+#elif UNITY_WEBGL        
+            return "WebGL";
+#endif
+            return "Editor";
+        }        
     }
 }
