@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using CrazyPanda.UnityCore.PandaTasks.PerfTests;
+using UnityEngine.TestTools;
+using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
@@ -204,23 +211,174 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.Throws< Exception >( PandaTasksUtilities.GetTaskWithError( testError ).ThrowIfError );
         }
 
-        [ AsyncTest ]
-        public async Task Delay_Should_Resolve_AfterGivenTime()
-        {
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-
-            await PandaTasksUtilities.Delay( 10 );
-
-            sw.Stop();
-
-            Assert.That( sw.ElapsedMilliseconds, Is.GreaterThanOrEqualTo( 10 ) );
-        }
-
         [ Test ]
         public void Delay_Should_Throw_WithNegativeTime()
         {
             Assert.That( () => PandaTasksUtilities.Delay( -1 ), Throws.ArgumentException );
+        }
+
+        [ Test ]
+        public void Delay_With_ZeroTime()
+        {
+            Assert.That(  PandaTasksUtilities.Delay( TimeSpan.Zero ).Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+        }
+
+        [ Test ]
+        public void DelayTask_Test()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var taskToWait = PandaTasksUtilities.Delay( 50 );
+                Thread.Sleep( 250 );
+                context.ExecuteTasks();
+                Assert.That(  taskToWait.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+            }
+        }
+
+        [ Test ]
+        public void DelayTask_WithInversedTimeout_Test()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var taskToWait1 = PandaTasksUtilities.Delay( 500 );
+                var taskToWait2 = PandaTasksUtilities.Delay( 30 );
+                Thread.Sleep( 250 );
+                context.ExecuteTasks();
+                Assert.That(  taskToWait2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+                Assert.That(  taskToWait1.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
+            }
+        }
+
+        [ Test ]
+        public void DelayTasks_Test()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                List< PandaTask > finishedTasks = new List< PandaTask >( 2 ); 
+
+                var taskToWait1 = PandaTasksUtilities.Delay( 50 );
+                taskToWait1.Done( () => finishedTasks.Add( taskToWait1 ) );
+                
+                var taskToWait2 = PandaTasksUtilities.Delay( 100 );
+                taskToWait2.Done( () => finishedTasks.Add( taskToWait2 ) );
+
+                Thread.Sleep( 250 );
+
+                context.ExecuteTasks();
+
+                var expectedResult = new List< PandaTask >() { taskToWait1, taskToWait2 };
+                
+                Assert.That( finishedTasks, Is.EquivalentTo( expectedResult  ) );
+            }
+        }
+        
+        [ Test ]
+        public void DelayTasks_WithInversedTimeout_Test()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                List< PandaTask > finishedTasks = new List< PandaTask >( 2 ); 
+
+                var taskToWait1 = PandaTasksUtilities.Delay( 100 );
+                taskToWait1.Done( () => finishedTasks.Add( taskToWait1 ) );
+                
+                var taskToWait2 = PandaTasksUtilities.Delay( 50 );
+                taskToWait2.Done( () => finishedTasks.Add( taskToWait2 ) );
+
+                Thread.Sleep( 250 );
+
+                context.ExecuteTasks();
+
+                var expectedResult = new List< PandaTask >() { taskToWait1, taskToWait2 };
+                
+                Assert.That( finishedTasks, Is.EquivalentTo( expectedResult  ) );
+            }
+        }
+        
+        [ Test ]
+        public void DelayTask_Cancellation_FromCompleteHandler()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+                var task = PandaTasksUtilities.Delay( 50, cancellationTokenSource.Token );
+                task.Done( () => cancellationTokenSource.Cancel() );
+
+                Thread.Sleep( 250 );
+
+                context.ExecuteTasks();
+                Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+            }
+        }
+
+        [ Test ]
+        public void DelayTask_Cancellation_After_Resolving_Another()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                
+                var task1 = PandaTasksUtilities.Delay( 50 );
+                task1.Done( () => cancellationTokenSource.Cancel() );
+                
+                var task2 = PandaTasksUtilities.Delay( 700, cancellationTokenSource.Token );
+
+                Thread.Sleep( 250 );
+
+                context.ExecuteTasks();
+
+                Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+            }
+        }
+
+        [ Test ]
+        public void DelayTask_Throwing_Exception_FromCompleteHandler()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var exceptionToThrow = new Exception( "some_exception" );
+                
+                var task1 = PandaTasksUtilities.Delay( 30 );
+                var task2 = PandaTasksUtilities.Delay( 100 );
+
+                task1.Done( () => throw exceptionToThrow );
+
+                Thread.Sleep( 250 );
+
+                try
+                {
+                    context.ExecuteTasks();
+                }
+                catch( Exception e )
+                {
+                    Assert.That( exceptionToThrow, Is.EqualTo( e ) );
+                }
+                
+                context.ExecuteTasks();
+
+                Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+            }
+        }
+
+        [ Test ]
+        public void DelayTaskCreation_At_CompleteHandler()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var task1 = PandaTasksUtilities.Delay( 30 );
+                PandaTask task2 = null;
+
+                task1.Done( () => task2 = PandaTasksUtilities.Delay( 50 ) );
+
+                Thread.Sleep( 250 );
+                context.ExecuteTasks();
+
+                Thread.Sleep( 250 );
+                context.ExecuteTasks();
+                
+                Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+            }
         }
 
         [Test]
@@ -238,33 +396,65 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( task.Error, Is.InstanceOf< TaskCanceledException >() );
         }
 
-        [ AsyncTest ]
-        public async Task Delay_Should_NotThrow_WhenCancelled_AfterCompletion()
+        [ Test ]
+        public void Delay_Should_NotThrow_WhenCancelled_AfterCompletion()
         {
-            // arrange
-            var tokenSource = new CancellationTokenSource();
-            var task = PandaTasksUtilities.Delay( 1, tokenSource.Token );
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                // arrange
+                var tokenSource = new CancellationTokenSource();
+                var task = PandaTasksUtilities.Delay( 1, tokenSource.Token );
 
-            // act
-            await task;
-            tokenSource.Cancel();
+                Thread.Sleep( 100 );
 
-            // assert
-            tokenSource.Cancel();
-            Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+                while( context.HasPendingTasks() )
+                {
+                    context.ExecuteTasks();
+                }
+                
+                tokenSource.Cancel();
+
+                // assert
+                tokenSource.Cancel();
+                Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+                
+            }
         }
 
-        [ AsyncTest ]
-        public async Task OrTimeout_Should_Resolve_With_IPandaTask()
+        [ Test ]
+        public void OrTimeout_Should_Resolve_With_IPandaTask()
         {
-            await PandaTasksUtilities.Delay( 5 ).OrTimeout( 100 );
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var task = ResultTask( 15 ).OrTimeout( 100 );
+                
+                Thread.Sleep( 250 );
+
+                while( context.HasPendingTasks() )
+                {
+                    context.ExecuteTasks();
+                }
+                
+                Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
+            }
         }
 
-        [ AsyncTest ]
-        public async Task OrTimeout_Should_Resolve_With_IPandaTaskResult()
+        [ Test ]
+        public void OrTimeout_Should_Resolve_With_IPandaTaskResult()
         {
-            var result = await ResultTask( 5 ).OrTimeout( 100 );
-            Assert.That( result, Is.EqualTo( 1 ) );
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                var task = ResultTask( 25 ).OrTimeout( 500 );
+                
+                Thread.Sleep( 250 );
+
+                while( context.HasPendingTasks() )
+                {
+                    context.ExecuteTasks();
+                }
+                
+                Assert.That( task.Result, Is.EqualTo( 1 ) );
+            }
         }
 
         [ Test ]
@@ -284,20 +474,23 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( task.Result, Is.EqualTo( 1 ) );
         }
 
-        [AsyncTest]
-        public async Task OrTimeout_Should_Work_Without_Exception()
+        [Test]
+        public void OrTimeout_Should_Work_Without_Exception()
         {
-            var taskToWait = PandaTasksUtilities.Delay(  2  );
-
-            var timeoutTask = taskToWait.OrTimeout(  10 );
-
-            try
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext())
             {
-                await timeoutTask;
-            }
-            catch( Exception e )
-            {
-                Assert.Fail("Expected no exception, but got: " + e.Message);                
+                _ = PandaTasksUtilities.Delay(  50  ).OrTimeout(  100 );
+
+                Thread.Sleep( 250 );
+
+                try
+                {
+                    context.ExecuteTasks();
+                }
+                catch( Exception e )
+                {
+                    Assert.Fail( "Expected no exception, but got: " + e.Message );
+                }
             }
         }
         
@@ -321,36 +514,36 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( task.Error, Is.EqualTo( ex ) );
         }
 
-        [ AsyncTest ]
-        public async Task OrTimeout_Should_Throw_With_Timeout_IPandaTask()
+        [ Test ]
+        public void OrTimeout_Should_Throw_With_Timeout_IPandaTask()
         {
-            var task = PandaTasksUtilities.Delay( 100 ).OrTimeout( 5 );
-            try
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
-                await task;
-            }
-            catch(TimeoutException)
-            {
-                Assert.Pass();
-            }
+                var task = PandaTasksUtilities.Delay( 100 ).OrTimeout( 5 );
 
-            Assert.Fail( "Timeout did not throw" );
+                Thread.Sleep( 250 );
+                
+                context.ExecuteTasks();
+
+                Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+                Assert.That( task.Error, Is.Not.Null );
+            }
         }
 
-        [ AsyncTest ]
-        public async Task OrTimeout_Should_Throw_With_Timeout_IPandaTaskResult()
+        [ Test ]
+        public void OrTimeout_Should_Throw_With_Timeout_IPandaTaskResult()
         {
-            var task = ResultTask( 100 ).OrTimeout( 5 );
-            try
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
-                await task;
-            }
-            catch (TimeoutException)
-            {
-                Assert.Pass();
-            }
+                var task = ResultTask( 100 ).OrTimeout( 5 );
 
-            Assert.Fail( "Timeout did not throw" );
+                Thread.Sleep( 250 );
+
+                context.ExecuteTasks();
+
+                Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
+                Assert.That( task.Error, Is.Not.Null );
+            }
         }
 
         [Test]
