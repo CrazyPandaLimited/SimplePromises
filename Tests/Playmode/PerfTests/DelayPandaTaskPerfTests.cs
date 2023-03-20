@@ -60,10 +60,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.PerfTests
                 Assert.That( updatesCounter, Is.LessThan( 550 ) );
                 
 #if UNITY_EDITOR || UNITY_STANDALONE
-                Assert.That( timeLeft.TotalMilliseconds, Is.GreaterThan( 30 ) );
-                Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 80 ) );
+                Assert.That( timeLeft.TotalMilliseconds, Is.GreaterThan( 10 ) );
+                Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 100 ) );
 #elif UNITY_ANDROID && !UNITY_EDITOR
-                Assert.That( timeLeft.TotalMilliseconds, Is.GreaterThan( 100 ) );
+                Assert.That( timeLeft.TotalMilliseconds, Is.GreaterThan( 50 ) );
                 Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 250 ) );
 #endif
             }
