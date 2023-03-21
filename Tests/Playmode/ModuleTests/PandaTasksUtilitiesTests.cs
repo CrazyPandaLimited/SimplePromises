@@ -403,9 +403,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             {
                 // arrange
                 var tokenSource = new CancellationTokenSource();
-                var task = PandaTasksUtilities.Delay( 20, tokenSource.Token );
+                var task = PandaTasksUtilities.Delay( 50, tokenSource.Token );
 
-                Thread.Sleep( 150 );
+                Thread.Sleep( 250 );
 
                 while( context.HasPendingTasks() )
                 {
