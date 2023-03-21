@@ -403,9 +403,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             {
                 // arrange
                 var tokenSource = new CancellationTokenSource();
-                var task = PandaTasksUtilities.Delay( 1, tokenSource.Token );
+                var task = PandaTasksUtilities.Delay( 20, tokenSource.Token );
 
-                Thread.Sleep( 100 );
+                Thread.Sleep( 150 );
 
                 while( context.HasPendingTasks() )
                 {
@@ -414,10 +414,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 
                 tokenSource.Cancel();
 
-                // assert
-                tokenSource.Cancel();
                 Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
-                
             }
         }
 
