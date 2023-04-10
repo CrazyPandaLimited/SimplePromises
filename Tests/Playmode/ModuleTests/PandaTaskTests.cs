@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTaskTests
 	{
 		private PandaTask _task;

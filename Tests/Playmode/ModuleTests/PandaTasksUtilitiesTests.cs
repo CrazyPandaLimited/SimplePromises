@@ -14,7 +14,6 @@ using Random = System.Random;
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
     [ TestFixture( typeof( object ) ) ]
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitiesTests <T>
     {
         [Test]
@@ -24,7 +23,6 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
     [ TestFixture( typeof( TestClass ), typeof( InheritedTestClass ) ) ]
     [ TestFixture( typeof( object ), typeof( TestClass ) ) ]
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitiesTests <T1,T2>
     {
         [ Test ]
@@ -32,7 +30,6 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
             Assert.That( PandaTasksUtilities.GetCanceledTask< T1 >(), Is.Not.EqualTo( PandaTasksUtilities.GetCanceledTask< T2 >() ) );
     }
 
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class PandaTasksUtilitiesTests
 	{
         [ Test ]

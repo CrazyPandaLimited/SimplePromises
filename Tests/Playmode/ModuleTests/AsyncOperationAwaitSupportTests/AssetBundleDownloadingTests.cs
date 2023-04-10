@@ -9,7 +9,6 @@ using static CrazyPanda.UnityCore.PandaTasks.AssetBundleLoader;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class AssetBundleDownloadingTests
     {
         private static string TestUri

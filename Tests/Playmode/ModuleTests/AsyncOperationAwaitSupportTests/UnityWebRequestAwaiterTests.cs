@@ -8,7 +8,6 @@ using Assert = CrazyPanda.UnityCore.PandaTasks.Asserts.Assert;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class UnityWebRequestAwaiterTests
     {
         private UnityWebRequest _request;

@@ -8,7 +8,6 @@ using NUnit.Framework;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ Category( "ModuleTests" ), Category( "LocalTests" ) ]
     public sealed class WhenAllPandaTaskTests
     {
         private static IEnumerable TaskShouldCancelledTestCases

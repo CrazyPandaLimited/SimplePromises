@@ -10,7 +10,6 @@ using Assert = CrazyPanda.UnityCore.PandaTasks.Asserts.Assert;
 
 namespace CrazyPanda.UnityCore.PandaTasks.Tests
 {
-    [ TestFixture, Category( "LocalTests" ) ]
     sealed class AssertTests
     {
         private const int MaxSecondsTestsExecutionTimeout = 30;
