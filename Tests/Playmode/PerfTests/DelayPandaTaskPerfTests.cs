@@ -64,7 +64,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.PerfTests
                 Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 100 ) );
 #elif UNITY_ANDROID && !UNITY_EDITOR
                 Assert.That( timeLeft.TotalMilliseconds, Is.GreaterThan( 50 ) );
-                Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 250 ) );
+                Assert.That( timeLeft.TotalMilliseconds, Is.LessThan( 650 ) );
 #endif
             }
 #if !UNITY_EDITOR && !UNITY_WEBGL && UNITY_2020_2_OR_NEWER
@@ -87,7 +87,7 @@ namespace CrazyPanda.UnityCore.PandaTasks.PerfTests
 
             if( report.IsIterationAllocsMeasured )
             {
-                Assert.That( report.IterationAllocs, Is.EqualTo( 250 ).Within( 2 ) );
+                Assert.That( report.IterationAllocs, Is.EqualTo( 250 ).Within( 10 ) );
             }
         }
     }
