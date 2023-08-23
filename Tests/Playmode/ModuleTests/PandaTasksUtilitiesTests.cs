@@ -32,6 +32,26 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
     public sealed class PandaTasksUtilitiesTests
 	{
+        [ AsyncTest ]
+        public async PandaTask CallbackTaskTest()
+        {
+            Action< string > onStateChanged = delegate( string f ) {  };
+
+            Action< string > callbackTask = PandaTasksUtilities.CallbackTask( out IPandaTask< string > resultTask );
+            onStateChanged += callbackTask;
+            onStateChanged += SomeEventHandler;
+            
+            onStateChanged.Invoke( "555555555555" );
+            
+            await resultTask;
+            onStateChanged -= callbackTask;
+            
+            void SomeEventHandler(string value)
+            {
+                callbackTask.Invoke( value );
+            }
+        }
+        
         [ Test ]
 		public void NullSequenceTest()
 		{
