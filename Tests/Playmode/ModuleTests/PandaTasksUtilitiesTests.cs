@@ -559,6 +559,20 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 Assert.That( task.Error, Is.Not.Null );
             }
         }
+        
+        // https://jira.crazypanda.ru/browse/REQUESTS-417
+        [ Test ]
+        public void Delay_ShouldNotThrow_WhenDelayIsTooHigh()
+        {
+            using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
+            {
+                // int32.Max as milliseconds is about 24 days
+                Assert.DoesNotThrow( () =>
+                {
+                    var task = new DelayPandaTask( TimeSpan.FromDays(30),CancellationToken.None );
+                } );
+            }
+        }
 
         [Test]
         public void OrTimeout_Should_Throw_With_NegativeTime_IPandaTask()
