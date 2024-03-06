@@ -232,7 +232,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void Delay_Should_Throw_WithNegativeTime()
         {
+
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
 
             Assert.That( () => PandaTasksUtilities.Delay( -1 ), Throws.ArgumentException );
         }
@@ -240,15 +243,18 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void Delay_With_ZeroTime()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
             Assert.That(  PandaTasksUtilities.Delay( TimeSpan.Zero ).Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
         }
 
         [ Test ]
         public void DelayTask_Test()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var taskToWait = PandaTasksUtilities.Delay( 50 );
@@ -256,15 +262,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 context.ExecuteTasks();
                 Assert.That(  taskToWait.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void DelayTask_WithInversedTimeout_Test()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var taskToWait1 = PandaTasksUtilities.Delay( 500 );
@@ -274,15 +282,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 Assert.That(  taskToWait2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
                 Assert.That(  taskToWait1.Status, Is.EqualTo( PandaTaskStatus.Pending ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void DelayTasks_Test()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 List< PandaTask > finishedTasks = new List< PandaTask >( 2 ); 
@@ -301,15 +311,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 
                 Assert.That( finishedTasks, Is.EquivalentTo( expectedResult  ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
         
         [ Test ]
         public void DelayTasks_WithInversedTimeout_Test()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 List< PandaTask > finishedTasks = new List< PandaTask >( 2 ); 
@@ -328,15 +340,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 
                 Assert.That( finishedTasks, Is.EquivalentTo( expectedResult  ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
         
         [ Test ]
         public void DelayTask_Cancellation_FromCompleteHandler()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -349,15 +363,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 context.ExecuteTasks();
                 Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void DelayTask_Cancellation_After_Resolving_Another()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -373,14 +389,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
                 Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void DelayTask_Throwing_Exception_FromCompleteHandler()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
 
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
@@ -406,15 +425,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
                 Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void DelayTaskCreation_At_CompleteHandler()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var task1 = PandaTasksUtilities.Delay( 30 );
@@ -430,15 +451,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 
                 Assert.That( task2.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [Test]
         public void Delay_Should_Cancel()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             // arrange
             var tokenSource = new CancellationTokenSource();
             var task = PandaTasksUtilities.Delay( 100, tokenSource.Token );
@@ -454,8 +477,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void Delay_Should_NotThrow_WhenCancelled_AfterCompletion()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 // arrange
@@ -473,16 +497,18 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
 
                 Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Resolved ) );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
         
 
         [ Test ]
         public void OrTimeout_Should_Resolve_With_IPandaTaskResult()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var task = ResultTask( 25 ).OrTimeout( 500 );
@@ -496,7 +522,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 
                 Assert.That( task.Result, Is.EqualTo( 1 ) );
             }
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
@@ -559,8 +587,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ Test ]
         public void OrTimeout_Should_Throw_With_Timeout_IPandaTask()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var task = PandaTasksUtilities.Delay( 100 ).OrTimeout( 5 );
@@ -572,15 +601,17 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
                 Assert.That( task.Error, Is.Not.Null );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [ Test ]
         public void OrTimeout_Should_Throw_With_Timeout_IPandaTaskResult()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-
+#endif
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 var task = ResultTask( 100 ).OrTimeout( 5 );
@@ -592,16 +623,18 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                 Assert.That( task.Status, Is.EqualTo( PandaTaskStatus.Rejected ) );
                 Assert.That( task.Error, Is.Not.Null );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
         
         // https://jira.crazypanda.ru/browse/REQUESTS-417
         [ Test ]
         public void Delay_ShouldNotThrow_WhenDelayIsTooHigh()
         {
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
-            
+#endif            
             using( var context = UnitySynchronizationContext.CreateSynchronizationContext() )
             {
                 // int32.Max as milliseconds is about 24 days
@@ -610,8 +643,9 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
                     var task = new DelayPandaTask( TimeSpan.FromDays(30),CancellationToken.None );
                 } );
             }
-            
+#if UNITY_WEBGL
             DelayPandaTask.Reset();
+#endif            
         }
 
         [Test]

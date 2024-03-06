@@ -116,6 +116,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ AsyncTest ]
         public async IPandaTask TrowsOnAwaitAfterAwait()
         {
+#if UNITY_WEBGL
+            DelayPandaTask.Reset();
+#endif            
+            
             // arrange
             var expectException = new Exception();
             async IPandaTask< int > func()
@@ -142,6 +146,10 @@ namespace CrazyPanda.UnityCore.PandaTasks.Tests
         [ AsyncTest ]
         public async IPandaTask TrowsOnAwaitAfterAwaitResult()
         {
+#if UNITY_WEBGL
+            DelayPandaTask.Reset();
+#endif            
+
             // arrange
             var expectException = new Exception();
             async IPandaTask< int > func()
